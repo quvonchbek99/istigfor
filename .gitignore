@@ -1,0 +1,9 @@
+# Ilova yig‘ilayotganda paydo bo‘ladigan vaqtinchalik papkalar
+ilova/build/
+ilova/gen/
+ilova/obj/
+ilova/assets/
+
+# Imzo kaliti hech qachon repoga yuklanmaydi
+*.jks
+*.keystore

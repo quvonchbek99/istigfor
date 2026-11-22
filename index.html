@@ -4,13 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="Istig‘for duolarini sanash uchun tasbeh: kunlik hisob, davralar va so‘nggi 7 kun statistikasi.">
+<meta name="description" content="Istig‘for duolarini sanash uchun tasbeh: 33 lik davralar, 40 000 marra, kunlik hisob va statistika.">
 <title>Istig‘for sanagichi</title>
 
 <!-- Havola Telegram va boshqa joylarda ulashilganda chiqadigan nom va tavsif -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Istig‘for sanagichi">
-<meta property="og:description" content="Istig‘for duolarini sanash uchun tasbeh: kunlik hisob, davralar va so‘nggi 7 kun statistikasi.">
+<meta property="og:description" content="Istig‘for duolarini sanash uchun tasbeh: 33 lik davralar, 40 000 marra, kunlik hisob va statistika.">
+
+<!-- Telefonga o‘rnatilganda (ilova sifatida) yuqori panel rangi va nomi -->
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#edf2ef">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1412">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Istig‘for">
 
 <!-- Brauzer varag‘idagi kichik belgi (favicon): yashil fonda sakkiz qirrali yulduz -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23007a5e'/%3E%3Cg fill='none' stroke='white' stroke-width='1.6'%3E%3Crect x='6' y='6' width='12' height='12' rx='1.2'/%3E%3Crect x='6' y='6' width='12' height='12' rx='1.2' transform='rotate(45 12 12)'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2' fill='white'/%3E%3C/svg%3E">
@@ -205,6 +211,13 @@ h1, h2 { font-family: var(--shrift-sarlavha); line-height: 1.25; margin: 0; text
 .izoh p { margin: 0; }
 .izoh .manba { font-size: 14px; color: var(--xira); }
 
+/* Doira ostidagi katta marra chizig‘i */
+.marra-qisqa { width: 100%; max-width: 22rem; display: grid; gap: 6px; }
+.marra-qisqa-matn { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--xira); }
+.marra-qisqa-matn b { color: var(--matn); font-weight: 700; }
+.marra-chiziq { height: 8px; border-radius: 999px; background: var(--yashil-och); overflow: hidden; }
+.marra-chiziq span { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--yashil); transition: width .3s ease; }
+
 /* ======================================================================
    4-QISM. O‘NG USTUN: hisob, sozlamalar, ma’lumot
    ====================================================================== */
@@ -215,6 +228,35 @@ h1, h2 { font-family: var(--shrift-sarlavha); line-height: 1.25; margin: 0; text
   padding: 20px; display: grid; gap: 16px;
 }
 .panel h2 { font-size: 20px; font-weight: 700; }
+.panel h3 { font-family: var(--shrift-matn); font-size: 15px; font-weight: 700; margin: 0; }
+.panel > .tugma { justify-self: start; }
+a.tugma { display: inline-flex; align-items: center; text-decoration: none; }
+.panel-qator { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+
+/* Katta marra paneli */
+.marra-asosiy { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.marra-son { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; }
+.marra-maqsad { font-size: 16px; font-weight: 600; color: var(--xira); }
+.marra-foiz { margin-left: auto; font-size: 15px; font-weight: 700; color: var(--yashil); }
+.marra-chiziq.katta { height: 12px; }
+.marra-tafsilot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.marra-tafsilot div { display: grid; gap: 2px; background: var(--yashil-och); border-radius: 12px; padding: 10px 12px; }
+.marra-tafsilot b { font-size: 18px; font-weight: 700; line-height: 1.2; }
+.marra-tafsilot span { font-size: 12px; color: var(--xira); }
+@media (max-width: 420px) {
+  .marra-tafsilot { gap: 8px; }
+  .marra-tafsilot div { padding: 8px 10px; }
+  .marra-tafsilot b { font-size: 16px; white-space: nowrap; }
+}
+.marra-hajmi { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.marra-hajmi .yorliq-matn { font-size: 14px; color: var(--xira); }
+.marra-hajmi .maqsad-tugmalar { justify-content: flex-start; }
+.bajarilganlar { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.bajarilganlar li {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px;
+  font-size: 14px; padding: 8px 12px; border: 1px solid var(--chiziq); border-radius: 10px;
+}
+.bajarilganlar li span { color: var(--xira); }
 
 /* Raqamli kartochkalar */
 .statlar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -376,6 +418,12 @@ dialog p { margin: 0 0 18px; }
       <!-- Bugungi hisob va davralar soni -->
       <span class="davra" id="davra">Bugun <b>0</b> · Davra <b>0</b></span>
 
+      <!-- Katta marra sari yo‘l (qisqa ko‘rinish). To‘liq ma’lumot «Katta marra» panelida -->
+      <div class="marra-qisqa">
+        <div class="marra-qisqa-matn"><span id="marraQisqaNom">40 000 marra</span><b id="marraQisqaSon">0 / 40 000</b></div>
+        <div class="marra-chiziq" aria-hidden="true"><span id="marraQisqaChiziq"></span></div>
+      </div>
+
       <!-- Boshqaruv: oxirgi sanoqni bekor qilish va davrani qaytadan boshlash -->
       <div class="boshqaruv">
         <button class="tugma" id="orqaga" type="button" title="Oxirgi sanoqni bekor qilish" aria-label="Oxirgi sanoqni bekor qilish">−1</button>
@@ -417,6 +465,32 @@ dialog p { margin: 0 0 18px; }
 
     <!-- ================= O‘NG USTUN ================= -->
     <div class="yon">
+
+      <!-- Katta marra: uzoq muddatli maqsad (odatda 40 000 istig‘for). Hisob kunma-kun saqlanib boradi -->
+      <section class="panel" aria-labelledby="marraSarlavha">
+        <div class="panel-qator">
+          <h2 id="marraSarlavha">Katta marra</h2>
+          <span class="eslatma" id="marraBoshlangan">Boshlangan: bugun</span>
+        </div>
+        <div class="marra-asosiy">
+          <span class="marra-son" id="marraSon">0</span>
+          <span class="marra-maqsad" id="marraMaqsad">/ 40 000</span>
+          <span class="marra-foiz" id="marraFoiz">0%</span>
+        </div>
+        <div class="marra-chiziq katta" id="marraChiziq" role="progressbar" aria-labelledby="marraSarlavha" aria-valuemin="0" aria-valuemax="40000" aria-valuenow="0"><span id="marraChiziqIchi"></span></div>
+        <div class="marra-tafsilot">
+          <div><b id="marraQoldi">40 000</b><span>Qoldi</span></div>
+          <div><b id="marraOrtacha">0</b><span>Kunlik o‘rtacha</span></div>
+          <div><b id="marraTaxmin">—</b><span>Tugashiga (taxminan)</span></div>
+        </div>
+        <div class="marra-hajmi">
+          <span class="yorliq-matn" id="marraHajmiNom">Marra hajmi</span>
+          <div class="maqsad-tugmalar" id="marraTugmalari" role="group" aria-labelledby="marraHajmiNom"></div>
+        </div>
+        <h3>Bajarilgan marralar</h3>
+        <ul class="bajarilganlar" id="bajarilganlar"></ul>
+        <button class="tugma" id="yangiMarraTugmasi" type="button">Yangi marra boshlash</button>
+      </section>
 
       <!-- Hisob: raqamli kartochkalar va so‘nggi 7 kun grafigi -->
       <section class="panel" aria-labelledby="hisobSarlavha">
@@ -475,10 +549,13 @@ dialog p { margin: 0 0 18px; }
         <h2 id="yoSarlavha">Qanday foydalaniladi</h2>
         <ul class="royxat">
           <li>Doirani bosing: har bosish bitta istig‘for. Kompyuterda <kbd>Space</kbd> yoki <kbd>Enter</kbd> ham sanaydi, <kbd>Backspace</kbd> oxirgisini bekor qiladi.</li>
-          <li>Yuqoridan duoni, pastdan maqsadni tanlang. Maqsadga yetganda donalar oltin rangga kiradi, davra hisoblanadi va sanoq boshidan boshlanadi.</li>
+          <li>Yuqoridan duoni, pastdan maqsadni tanlang (odatda 33). Maqsadga yetganda donalar oltin rangga kiradi, davra hisoblanadi va sanoq boshidan boshlanadi.</li>
           <li>Har bir duoning o‘z sanog‘i bor, duoni almashtirsangiz hisob yo‘qolmaydi.</li>
           <li>Tebranish va «Ekran o‘chmasin» hamma brauzerda ham ishlamaydi. Masalan, iPhone’dagi Safari tebranishni qo‘llamaydi.</li>
+          <li>Katta marra barcha duolardagi istig‘forlarni kunma-kun qo‘shib boradi. Marra to‘lganda u «Bajarilgan marralar» ro‘yxatiga yoziladi va yangisi boshlanadi.</li>
+          <li id="ornatishIzoh">Telefonga o‘rnatish: Android uchun ilovani yuklab oling. iPhone’da saytni Safari’da oching va Share → Add to Home Screen («На экран Домой») ni tanlang.</li>
         </ul>
+        <a class="tugma asosiy-tugma" id="ilovaHavola" href="istigfor.apk" download hidden>Android ilovasini yuklab olish</a>
       </section>
     </div>
   </main>
@@ -565,16 +642,19 @@ const ZIKRLAR = [
 
 const MAQSADLAR = [33, 70, 100, 300, 1000, 0];  // bir davradagi son; 0 = maqsadsiz (cheksiz)
 const DONALAR_SONI = 33;                         // tasbehdagi donalar soni (klassik 33 talik tasbeh)
+const MARRALAR = [1000, 10000, 40000, 100000];   // katta marra hajmlari (odatda 40 000)
 
 
 /* ---------- B) HOLAT VA SAQLASH ----------
    "holat" — saytning butun xotirasi. Masalan:
    {
      zikr: "astagfirulloh",                                ← hozir tanlangan duo
-     maqsad: 100,                                          ← bir davrada nechta
+     maqsad: 33,                                           ← bir davrada nechta
      joriy: { astagfirulloh: 47 },                         ← har bir duoning hozirgi davradagi sanog‘i
      kunlar: { "2026-11-22": { jami: 247, davralar: 2 } }, ← har kungi hisob
      umumiy: 5310,                                         ← butun vaqt davomidagi jami
+     marra: { maqsad: 40000, soni: 5310, boshlangan: "2026-11-01" },   ← katta marra sari yo‘l
+     marralar: [ { maqsad: 40000, boshlangan: "...", tugagan: "..." } ], ← bajarilgan marralar
      sozlamalar: { tebranish: true, ovoz: false, ekran: false }
    }
    Har o‘zgarishdan keyin holat brauzer xotirasiga (localStorage) yoziladi,
@@ -584,10 +664,12 @@ const SAQLASH_KALITI = "istigfor-sanagich-v1";
 function boshlangichHolat() {
   return {
     zikr: ZIKRLAR[0].id,
-    maqsad: 100,
+    maqsad: 33,
     joriy: {},
     kunlar: {},
     umumiy: 0,
+    marra: { maqsad: 40000, soni: 0, boshlangan: sanaKaliti(new Date()) },
+    marralar: [],
     sozlamalar: { tebranish: true, ovoz: false, ekran: false }
   };
 }
@@ -599,12 +681,24 @@ function yuklash() {
     const matn = localStorage.getItem(SAQLASH_KALITI);
     if (!matn) return toza;
     const s = JSON.parse(matn);
+    const kunlar = s.kunlar || {};
+    // Marrasi yo‘q eski saqlanmada: shu paytgacha aytilganlar birinchi marraga qo‘shiladi
+    const marra = s.marra || {
+      soni: Number(s.umumiy) || 0,
+      boshlangan: Object.keys(kunlar).sort()[0]
+    };
     return {
       zikr: ZIKRLAR.some(z => z.id === s.zikr) ? s.zikr : toza.zikr,
       maqsad: MAQSADLAR.includes(s.maqsad) ? s.maqsad : toza.maqsad,
       joriy: s.joriy || {},
-      kunlar: s.kunlar || {},
+      kunlar,
       umumiy: Number(s.umumiy) || 0,
+      marra: {
+        maqsad: MARRALAR.includes(marra.maqsad) ? marra.maqsad : toza.marra.maqsad,
+        soni: Number(marra.soni) || 0,
+        boshlangan: marra.boshlangan || toza.marra.boshlangan
+      },
+      marralar: Array.isArray(s.marralar) ? s.marralar : [],
       sozlamalar: { ...toza.sozlamalar, ...(s.sozlamalar || {}) }
     };
   } catch (xato) {
@@ -623,6 +717,7 @@ function saqlash() {
 }
 
 let holat = yuklash();
+marraniTekshir();   // eski hisob marradan katta bo‘lsa, bajarilgan marralarga taqsimlanadi
 
 
 /* ---------- C) YORDAMCHI FUNKSIYALAR: sana va sonlar ---------- */
@@ -666,6 +761,24 @@ function sanaMatni(sana) {
 function toliqSana(sana) {
   const kun = HAFTA_KUNLARI[sana.getDay()];
   return `${kun[0].toUpperCase() + kun.slice(1)}, ${sana.getDate()}-${OYLAR[sana.getMonth()]}`;
+}
+
+/* "2026-11-22" kalitini sanaga aylantiradi */
+function kalitdanSana(kalit) {
+  const [yil, oy, kun] = kalit.split("-").map(Number);
+  return new Date(yil, oy - 1, kun, 12);
+}
+
+/* "22-noyabr" (boshqa yil bo‘lsa "22-noyabr 2025") */
+function qisqaSana(kalit) {
+  const sana = kalitdanSana(kalit);
+  const yil = sana.getFullYear() !== new Date().getFullYear() ? " " + sana.getFullYear() : "";
+  return `${sana.getDate()}-${OYLAR[sana.getMonth()]}${yil}`;
+}
+
+/* Berilgan kundan bugungacha necha kun (ikkala kun ham hisobga olinadi) */
+function otganKunlar(kalit) {
+  return Math.max(1, Math.round((kunlarOldin(0) - kalitdanSana(kalit)) / 86400000) + 1);
 }
 
 /* Necha kun ketma-ket istig‘for aytilgan. Bugun hali aytilmagan bo‘lsa, kechadan sanaydi */
@@ -722,6 +835,7 @@ function sanash() {
   holat.joriy[id] = (holat.joriy[id] || 0) + 1;   // davradagi sanoq
   kun.jami += 1;                                   // bugungi jami
   holat.umumiy += 1;                               // umumiy jami
+  holat.marra.soni += 1;                           // katta marra sari
 
   // Maqsadga yetdikmi? (maqsad 0 bo‘lsa — cheksiz, tekshirilmaydi)
   if (holat.maqsad > 0 && holat.joriy[id] >= holat.maqsad) {
@@ -731,6 +845,12 @@ function sanash() {
   } else {
     tebrat(12);                    // qisqa tebranish
     ovozChiqar(false);             // qisqa "tiq" (yoqilgan bo‘lsa)
+  }
+
+  // Katta marra to‘ldimi?
+  if (marraniTekshir()) {
+    tebrat([200, 100, 200, 100, 400]);
+    xabarKorsat(`${formatla(holat.marralar[0].maqsad)} marra bajarildi! Alloh qabul qilsin!`);
   }
 
   saqlash();
@@ -758,6 +878,7 @@ function bittaOrqaga() {
   const kun = bugungiYozuv();
   kun.jami = Math.max(0, kun.jami - 1);
   holat.umumiy = Math.max(0, holat.umumiy - 1);
+  holat.marra.soni = Math.max(0, holat.marra.soni - 1);
   saqlash();
   chizish();
 }
@@ -779,16 +900,53 @@ async function davraniQaytadan() {
 /* Barcha hisobni o‘chiradi (tanlangan duo, maqsad va sozlamalar qoladi) */
 async function hammasiniOchirish() {
   const ha = await soraymiz(
-    "Bugungi, kunlik va umumiy hisob butunlay o‘chirilsinmi? Buni qaytarib bo‘lmaydi.",
+    "Bugungi, kunlik, umumiy hisob va marralar butunlay o‘chirilsinmi? Buni qaytarib bo‘lmaydi.",
     "Ha, o‘chirish",
     true
   );
   if (!ha) return;
   const { zikr, maqsad, sozlamalar } = holat;
+  const marraHajmi = holat.marra.maqsad;
   holat = { ...boshlangichHolat(), zikr, maqsad, sozlamalar };
+  holat.marra.maqsad = marraHajmi;
   saqlash();
   chizish();
   xabarKorsat("Hisob tozalandi");
+}
+
+/* Katta marra to‘ldimi? To‘lgan bo‘lsa, «Bajarilgan marralar»ga yozib, yangisini boshlaydi.
+   Ortib qolgan son yangi marraga o‘tadi. Marra bajarilgan bo‘lsa true qaytaradi */
+function marraniTekshir() {
+  const m = holat.marra;
+  let bajarildi = false;
+  while (m.soni >= m.maqsad) {
+    holat.marralar.unshift({ maqsad: m.maqsad, boshlangan: m.boshlangan, tugagan: sanaKaliti(new Date()) });
+    m.soni -= m.maqsad;
+    m.boshlangan = sanaKaliti(new Date());
+    bajarildi = true;
+  }
+  return bajarildi;
+}
+
+/* Marra hajmini tanlaydi (1 000, 10 000, 40 000, 100 000) */
+function marraHajminiTanla(hajm) {
+  holat.marra.maqsad = hajm;
+  if (marraniTekshir()) xabarKorsat("Marra bajarildi! Alloh qabul qilsin!");
+  saqlash();
+  chizish();
+}
+
+/* Joriy marrani 0 dan qayta boshlaydi (bajarilganlar ro‘yxati saqlanib qoladi) */
+async function yangiMarra() {
+  const ha = await soraymiz(
+    "Joriy marra 0 dan qayta boshlansinmi? Bajarilgan marralar ro‘yxati saqlanib qoladi.",
+    "Ha, yangi marra"
+  );
+  if (!ha) return;
+  holat.marra.soni = 0;
+  holat.marra.boshlangan = sanaKaliti(new Date());
+  saqlash();
+  chizish();
 }
 
 /* "Rostdan ham?" oynasini ochadi va javobni kutadi: true (ha) yoki false (yo‘q) */
@@ -856,6 +1014,11 @@ function ovozChiqar(uzun) {
 /* Ekran o‘chib qolmasligi uchun (Wake Lock). Ishlasa true qaytaradi */
 let ekranQulfi = null;
 async function ekranniYoqiqTut() {
+  // Android ilovasi ichida ekranni ilovaning o‘zi yoniq tutadi
+  if (window.Ilova && typeof window.Ilova.ekranniYoqiqTut === "function") {
+    window.Ilova.ekranniYoqiqTut(Boolean(holat.sozlamalar.ekran));
+    return true;
+  }
   if (!holat.sozlamalar.ekran || !("wakeLock" in navigator) || document.visibilityState !== "visible") return false;
   try {
     ekranQulfi = await navigator.wakeLock.request("screen");
@@ -865,6 +1028,7 @@ async function ekranniYoqiqTut() {
   }
 }
 function ekranQulfiniOchir() {
+  if (window.Ilova && typeof window.Ilova.ekranniYoqiqTut === "function") window.Ilova.ekranniYoqiqTut(false);
   if (ekranQulfi) {
     ekranQulfi.release().catch(() => {});
     ekranQulfi = null;
@@ -918,13 +1082,48 @@ function chizish() {
   el.statKetma.textContent = formatla(ketmaKetKunlar());
   el.statJami.textContent = formatla(holat.umumiy);
 
-  // 6) So‘nggi 7 kun grafigi
+  // 6) Katta marra
+  marraniChiz();
+
+  // 7) So‘nggi 7 kun grafigi
   haftaniChiz();
 
-  // 7) Sozlamalar
+  // 8) Sozlamalar
   el.sozTebranish.checked = holat.sozlamalar.tebranish && !el.sozTebranish.disabled;
   el.sozOvoz.checked = holat.sozlamalar.ovoz;
   el.sozEkran.checked = holat.sozlamalar.ekran && !el.sozEkran.disabled;
+}
+
+/* Katta marra qismlarini yangilaydi: doira ostidagi chiziq va «Katta marra» paneli */
+function marraniChiz() {
+  const m = holat.marra;
+  const foiz = Math.min(100, m.soni / m.maqsad * 100);
+  const foizMatn = m.soni === 0 ? "0%" : foiz < 0.1 ? "<0,1%" : foiz.toFixed(1).replace(".", ",") + "%";
+  const qoldi = Math.max(0, m.maqsad - m.soni);
+  const ortacha = Math.round(m.soni / otganKunlar(m.boshlangan));   // kuniga o‘rtacha
+
+  el.marraQisqaNom.textContent = `${formatla(m.maqsad)} marra`;
+  el.marraQisqaSon.textContent = `${formatla(m.soni)} / ${formatla(m.maqsad)}`;
+  el.marraQisqaChiziq.style.width = foiz + "%";
+
+  el.marraSon.textContent = formatla(m.soni);
+  el.marraMaqsad.textContent = "/ " + formatla(m.maqsad);
+  el.marraFoiz.textContent = foizMatn;
+  el.marraChiziqIchi.style.width = foiz + "%";
+  el.marraChiziq.setAttribute("aria-valuemax", m.maqsad);
+  el.marraChiziq.setAttribute("aria-valuenow", m.soni);
+  el.marraBoshlangan.textContent = "Boshlangan: " + qisqaSana(m.boshlangan);
+  el.marraQoldi.textContent = formatla(qoldi);
+  el.marraOrtacha.textContent = formatla(ortacha);
+  el.marraTaxmin.textContent = ortacha > 0 ? formatla(Math.ceil(qoldi / ortacha)) + " kun" : "—";
+  el.marraTugmalari.querySelectorAll("button").forEach(t => {
+    t.setAttribute("aria-pressed", String(Number(t.dataset.marra) === m.maqsad));
+  });
+
+  // Bajarilgan marralar (eng oxirgisi tepada)
+  el.bajarilganlar.innerHTML = holat.marralar.length
+    ? holat.marralar.map(b => `<li><b>${formatla(b.maqsad)}</b><span>${qisqaSana(b.boshlangan)} – ${qisqaSana(b.tugagan)}</span></li>`).join("")
+    : "<li><span>Hali yo‘q. Bajarilgan har bir marra shu yerda saqlanadi.</span></li>";
 }
 
 /* Nechta dona yonishi kerak (33 tadan) */
@@ -1074,6 +1273,16 @@ function tugmalarniYasash() {
     });
     el.maqsadlar.appendChild(t);
   });
+
+  MARRALAR.forEach(hajm => {
+    const t = document.createElement("button");
+    t.type = "button";
+    t.className = "maqsad";
+    t.dataset.marra = hajm;
+    t.textContent = formatla(hajm);
+    t.addEventListener("click", () => marraHajminiTanla(hajm));
+    el.marraTugmalari.appendChild(t);
+  });
 }
 
 /* Qurilma imkoniyati yo‘q bo‘lsa, tegishli sozlamani o‘chirib qo‘yadi */
@@ -1082,10 +1291,35 @@ function qurilmaImkoniyatlari() {
     el.sozTebranish.disabled = true;
     el.tebranishIzoh.textContent = "Bu qurilma yoki brauzerda mavjud emas";
   }
-  if (!("wakeLock" in navigator)) {
+  if (!("wakeLock" in navigator) && !window.Ilova) {   // ilova ichida ekranni ilovaning o‘zi boshqaradi
     el.sozEkran.disabled = true;
     el.ekranIzoh.textContent = "Bu brauzerda mavjud emas";
   }
+}
+
+/* Sayt o‘z manzilida (GitHub Pages) ochilganda: telefonga o‘rnatish (PWA),
+   internetsiz ishlash va Android ilovasini yuklab olish tugmasi */
+function ilovaImkoniyatlari() {
+  if (window.Ilova) {                     // Android ilovasining ichida bular kerak emas
+    el.ornatishIzoh.hidden = true;
+    return;
+  }
+  if (location.protocol !== "https:") return;
+  fetch("manifest.webmanifest", { method: "HEAD" }).then((javob) => {
+    if (!javob.ok) return;
+    const manifest = document.createElement("link");
+    manifest.rel = "manifest";
+    manifest.href = "manifest.webmanifest";
+    document.head.appendChild(manifest);
+    const ikonka = document.createElement("link");
+    ikonka.rel = "apple-touch-icon";
+    ikonka.href = "ikonka-192.png";
+    document.head.appendChild(ikonka);
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  }).catch(() => {});
+  fetch("istigfor.apk", { method: "HEAD" }).then((javob) => {
+    if (javob.ok) el.ilovaHavola.hidden = false;
+  }).catch(() => {});
 }
 
 /* Barcha tugma va klavishlarga vazifa biriktiradi */
@@ -1094,6 +1328,7 @@ function hodisalarniUlash() {
   el.orqaga.addEventListener("click", bittaOrqaga);
   el.qaytadan.addEventListener("click", davraniQaytadan);
   el.ochirishTugmasi.addEventListener("click", hammasiniOchirish);
+  el.yangiMarraTugmasi.addEventListener("click", yangiMarra);
   el.dialogHa.addEventListener("click", () => el.dialog.close("ha"));
   el.dialogYoq.addEventListener("click", () => el.dialog.close("yoq"));
 
@@ -1177,6 +1412,7 @@ qurilmaImkoniyatlari();
 hodisalarniUlash();
 chizish();
 ekranniYoqiqTut();
+ilovaImkoniyatlari();
 </script>
 </body>
 </html>

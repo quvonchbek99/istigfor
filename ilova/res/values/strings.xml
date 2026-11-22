@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Telefon ekranida ilova belgisining ostida yoziladigan nom -->
+    <string name="nomi">Istig‘for</string>
+</resources>

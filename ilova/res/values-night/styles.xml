@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tungi mavzu: telefon qorong‘i rejimda bo‘lsa, sayt ham tungi ranglarda ochiladi -->
+<resources>
+    <color name="fon">#0B1412</color>
+    <style name="Mavzu" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/fon</item>
+        <item name="android:statusBarColor">@color/fon</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

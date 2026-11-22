@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kunduzgi mavzu: ochilish foni va yuqori panel sayt rangida -->
+<resources>
+    <color name="fon">#EDF2EF</color>
+    <style name="Mavzu" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/fon</item>
+        <item name="android:statusBarColor">@color/fon</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

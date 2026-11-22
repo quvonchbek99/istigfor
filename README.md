@@ -1,22 +1,47 @@
 # Istig‘for sanagichi
 
-Istig‘for duolarini sanash uchun oddiy sayt: 33 donali tasbeh, 5 ta istig‘for duosi (arabcha matni, o‘qilishi, ma’nosi va manbasi bilan), maqsad tanlash, bugungi hisob, davralar va so‘nggi 7 kun grafigi.
+Istig‘for duolarini sanash uchun sayt va Android ilovasi.
 
 **Sayt:** https://quvonchbek99.github.io/istigfor/
+**Android ilovasi:** [istigfor.apk](istigfor.apk) (internetsiz ishlaydi)
+
+## Imkoniyatlar
+
+- 33 donali tasbeh: odatiy maqsad 33, xohlasangiz 70, 100, 300, 1 000 yoki cheksiz.
+- 5 ta istig‘for duosi: arabcha matni, o‘qilishi, ma’nosi va manbasi bilan.
+- **Katta marra:** 40 000 (yoki 1 000, 10 000, 100 000) istig‘for sari yo‘l. Hisob kunma-kun saqlanib boradi, bajarilgan marralar ro‘yxatda qoladi.
+- Bugungi hisob, davralar, ketma-ket kunlar, so‘nggi 7 kun grafigi.
+- Tungi rejim, tebranish, ovoz, «Ekran o‘chmasin».
+
+## Telefonga o‘rnatish
+
+- **Android:** `istigfor.apk` ni yuklab oling va o‘rnating (telefon «noma’lum manbadan o‘rnatish»ga ruxsat so‘rasa, ruxsat bering).
+- **iPhone:** saytni Safari’da oching va Share → Add to Home Screen ni tanlang.
 
 ## Kod qanday tuzilgan
 
 Butun sayt bitta `index.html` faylda, har bir qismiga o‘zbekcha izoh yozilgan:
 
-- **HTML**: sahifa tuzilishi (duo tugmalari, tasbeh doirasi, hisob, sozlamalar).
+- **HTML**: sahifa tuzilishi (duo tugmalari, tasbeh doirasi, marra, hisob, sozlamalar).
 - **CSS** (`<style>` ichida): ko‘rinish. Ranglar faylning boshidagi `:root` blokida.
 - **JavaScript** (`<script>` ichida): mantiq.
   - `ZIKRLAR`: duolar ro‘yxati. Yangi duo qo‘shish uchun shu ro‘yxatga yangi blok qo‘shing.
-  - `sanash()`: har bosishda +1, maqsadga yetganda davra yopiladi.
-  - `saqlash()` / `yuklash()`: hisobni brauzer xotirasiga (localStorage) yozadi va o‘qiydi.
-  - `chizish()`: ekrandagi son, donalar va grafikni yangilaydi.
+  - `MARRALAR`: katta marra hajmlari (odatda 40 000).
+  - `sanash()`: har bosishda +1; davra va marra to‘lishini tekshiradi.
+  - `marraniTekshir()`: marra to‘lsa, uni «Bajarilgan marralar»ga yozib, yangisini boshlaydi.
+  - `saqlash()` / `yuklash()`: hisobni telefon/brauzer xotirasiga (localStorage) yozadi va o‘qiydi.
+  - `chizish()`: ekrandagi son, donalar, marra va grafikni yangilaydi.
 
-Hisob foydalanuvchining o‘z brauzerida saqlanadi va hech qayerga yuborilmaydi.
+Boshqa fayllar:
+
+- `manifest.webmanifest`, `sw.js`, `ikonka-*.png` — saytni telefonga ilova kabi o‘rnatish va internetsiz ochish uchun.
+- `ilova/` — Android ilovasining kodi:
+  - `AndroidManifest.xml` — ilova nomi, belgisi va ruxsatlari;
+  - `src/uz/kuvonch/istigfor/MainActivity.java` — saytni telefon ichida ochuvchi oyna (WebView);
+  - `res/` — belgilar va ranglar, `ikonkalar.py` — belgilarni chizadi;
+  - `qurish.sh` — APK yig‘ish skripti. Imzo kaliti (`istigfor-kalit.jks`) repoda yo‘q, u alohida saqlanadi.
+
+Hisob foydalanuvchining o‘z telefonida saqlanadi va hech qayerga yuborilmaydi.
 
 ## Manbalar
 
