@@ -7,3 +7,6 @@ ilova/assets/
 # Imzo kaliti hech qachon repoga yuklanmaydi
 *.jks
 *.keystore
+
+# APK imzosining yordamchi fayli
+*.idsig
