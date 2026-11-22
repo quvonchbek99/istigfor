@@ -10,6 +10,7 @@ Istig‘for duolarini sanash uchun sayt va Android ilovasi.
 - 33 donali tasbeh: odatiy maqsad 33, xohlasangiz 70, 100, 300, 1 000 yoki cheksiz.
 - 5 ta istig‘for duosi: arabcha matni, o‘qilishi, ma’nosi va manbasi bilan.
 - **Katta marra:** 40 000 (yoki 1 000, 10 000, 100 000) istig‘for sari yo‘l. Hisob kunma-kun saqlanib boradi, bajarilgan marralar ro‘yxatda qoladi.
+- **Ovoz bilan sanash:** «Astag‘firulloh» deganingizda telefon eshitib, o‘zi sanaydi (Chrome, Safari va Android ilovasida; odatda internet kerak).
 - Bugungi hisob, davralar, ketma-ket kunlar, so‘nggi 7 kun grafigi.
 - Tungi rejim, tebranish, ovoz, «Ekran o‘chmasin».
 
@@ -29,6 +30,8 @@ Butun sayt bitta `index.html` faylda, har bir qismiga o‘zbekcha izoh yozilgan:
   - `MARRALAR`: katta marra hajmlari (odatda 40 000).
   - `sanash()`: har bosishda +1; davra va marra to‘lishini tekshiradi.
   - `marraniTekshir()`: marra to‘lsa, uni «Bajarilgan marralar»ga yozib, yangisini boshlaydi.
+  - `OVOZ_NAQSHLARI`: ovoz bilan sanashda har bir duodan nima eshitilganda sanalishi.
+  - `ovozniBoshla()` / `eshitilganMatn()`: mikrofonni yoqadi va tanilgan matndagi istig‘forlarni sanaydi.
   - `saqlash()` / `yuklash()`: hisobni telefon/brauzer xotirasiga (localStorage) yozadi va o‘qiydi.
   - `chizish()`: ekrandagi son, donalar, marra va grafikni yangilaydi.
 
@@ -37,7 +40,7 @@ Boshqa fayllar:
 - `manifest.webmanifest`, `sw.js`, `ikonka-*.png` — saytni telefonga ilova kabi o‘rnatish va internetsiz ochish uchun.
 - `ilova/` — Android ilovasining kodi:
   - `AndroidManifest.xml` — ilova nomi, belgisi va ruxsatlari;
-  - `src/uz/kuvonch/istigfor/MainActivity.java` — saytni telefon ichida ochuvchi oyna (WebView);
+  - `src/uz/kuvonch/istigfor/MainActivity.java` — saytni telefon ichida ochuvchi oyna (WebView) va ovozni tanish;
   - `res/` — belgilar va ranglar, `ikonkalar.py` — belgilarni chizadi;
   - `qurish.sh` — APK yig‘ish skripti. Imzo kaliti (`istigfor-kalit.jks`) repoda yo‘q, u alohida saqlanadi.
 

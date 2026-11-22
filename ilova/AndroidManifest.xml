@@ -2,8 +2,8 @@
 <!-- Ilovaning "pasporti": nomi, belgisi, ruxsatlari va ochiladigan oynasi -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uz.kuvonch.istigfor"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="2"
+    android:versionName="1.1">
 
     <!-- Android 5.0 dan boshlab ishlaydi -->
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
@@ -12,6 +12,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Har bosishda telefonni titratish uchun -->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Ovoz bilan sanash: «Astag‘firulloh» deganingizni eshitish uchun -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Android 11+ da telefonning nutqni tanish xizmatini ko‘ra olish uchun -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
     <application
         android:label="@string/nomi"
