@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Istig‘for duolarini sanash uchun tasbeh: kunlik hisob, davralar va so‘nggi 7 kun statistikasi.">
+<title>Istig‘for sanagichi</title>
+
+<!-- Havola Telegram va boshqa joylarda ulashilganda chiqadigan nom va tavsif -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Istig‘for sanagichi">
+<meta property="og:description" content="Istig‘for duolarini sanash uchun tasbeh: kunlik hisob, davralar va so‘nggi 7 kun statistikasi.">
+
+<!-- Brauzer varag‘idagi kichik belgi (favicon): yashil fonda sakkiz qirrali yulduz -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23007a5e'/%3E%3Cg fill='none' stroke='white' stroke-width='1.6'%3E%3Crect x='6' y='6' width='12' height='12' rx='1.2'/%3E%3Crect x='6' y='6' width='12' height='12' rx='1.2' transform='rotate(45 12 12)'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='2' fill='white'/%3E%3C/svg%3E">
+
+<!-- Shriftlar (Google Fonts):
+     Amiri      — arabcha duo matnlari uchun
+     El Messiri — sarlavhalar uchun
+     Manrope    — oddiy matn va raqamlar uchun -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=El+Messiri:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+
+<style>
+/* ======================================================================
+   1-QISM. DIZAYN TOKENLARI: ranglar va shriftlar
+   Saytdagi hamma rang shu yerdan olinadi. Rangni almashtirmoqchi
+   bo‘lsangiz, faqat shu qatorlarni o‘zgartiring.
+   Maket: chapda tasbeh (sanash), o‘ngda hisob va ma’lumot;
+          telefonda hammasi bitta ustunda, tasbeh tepada.
+   ====================================================================== */
+:root {
+  --fon:    #edf2ef;  /* sahifa foni: tong oldi osmoni kabi och yashil-kulrang */
+  --sirt:   #fbfcfb;  /* panellar va tugmalar foni */
+  --matn:   #14231e;  /* asosiy matn */
+  --xira:   #56665f;  /* ikkinchi darajali (xira) matn */
+  --yashil: #007a5e;  /* asosiy rang: zumrad yashil */
+  --oltin:  #a8761c;  /* davra tugaganda va tasbeh boshi uchun */
+  --xavf:   #a63f2b;  /* faqat "o‘chirish" kabi xavfli amallar uchun */
+
+  /* Yordamchi ranglar yuqoridagilarni aralashtirib olinadi */
+  --chiziq:      color-mix(in oklab, var(--matn) 13%, var(--sirt));
+  --bosh-dona:   color-mix(in oklab, var(--matn) 20%, var(--sirt));
+  --yashil-och:  color-mix(in oklab, var(--yashil) 11%, var(--sirt));
+  --yashil-xira: color-mix(in oklab, var(--yashil) 40%, var(--sirt));
+
+  --shrift-sarlavha: "El Messiri", "Segoe UI", system-ui, sans-serif;
+  --shrift-matn: "Manrope", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --shrift-arab: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", serif;
+
+  --soya: 0 1px 2px rgb(20 35 30 / 6%), 0 12px 32px rgb(20 35 30 / 8%);
+  color-scheme: light;
+}
+
+/* Tungi rejim: telefon yoki kompyuter qorong‘i rejimda bo‘lsa */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fon: #0b1412; --sirt: #12201c; --matn: #e3ece8; --xira: #93a59e;
+    --yashil: #34a886; --oltin: #e2b45d; --xavf: #e8846f;
+    --soya: 0 1px 2px rgb(0 0 0 / 35%), 0 12px 32px rgb(0 0 0 / 30%);
+    color-scheme: dark;
+  }
+}
+/* Sayt ochilgan muhit qorong‘i mavzuni o‘zi tanlasa */
+:root[data-theme="dark"] {
+  --fon: #0b1412; --sirt: #12201c; --matn: #e3ece8; --xira: #93a59e;
+  --yashil: #34a886; --oltin: #e2b45d; --xavf: #e8846f;
+  --soya: 0 1px 2px rgb(0 0 0 / 35%), 0 12px 32px rgb(0 0 0 / 30%);
+  color-scheme: dark;
+}
+
+/* ======================================================================
+   2-QISM. UMUMIY KO‘RINISH
+   ====================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: var(--fon);
+  color: var(--matn);
+  font-family: var(--shrift-matn);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--yashil); outline-offset: 3px; }
+h1, h2 { font-family: var(--shrift-sarlavha); line-height: 1.25; margin: 0; text-wrap: balance; }
+
+.sahifa { max-width: 1120px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 22px; }
+
+/* ---------- Tepa qism: belgi, nom va sana ---------- */
+.bosh { display: flex; align-items: center; gap: 14px; }
+.belgi {
+  width: 46px; height: 46px; flex: none; border-radius: 14px;
+  display: grid; place-items: center;
+  background: var(--yashil); color: var(--sirt);
+}
+.bosh h1 { font-size: 26px; font-weight: 700; }
+.bosh p { margin: 2px 0 0; color: var(--xira); font-size: 14px; }
+
+/* ---------- Ikki ustunli maket (keng ekranda) ---------- */
+.asosiy { display: grid; gap: 22px; align-items: start; }
+@media (min-width: 920px) {
+  .asosiy { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; }
+}
+
+/* ======================================================================
+   3-QISM. SANASH QISMI (chap ustun)
+   ====================================================================== */
+.sanash { display: grid; gap: 16px; justify-items: center; text-align: center; }
+
+/* Duo tanlash tugmalari: telefonda yonga suriladi, keng ekranda qatorga teriladi */
+.zikrlar {
+  display: flex; gap: 8px; width: 100%;
+  overflow-x: auto; padding: 3px; scrollbar-width: none;
+}
+.zikrlar::-webkit-scrollbar { display: none; }
+@media (min-width: 600px) {
+  .zikrlar { flex-wrap: wrap; justify-content: center; overflow: visible; }
+}
+.chip {
+  flex: none; min-height: 40px; padding: 8px 16px; border-radius: 999px;
+  border: 1px solid var(--chiziq); background: var(--sirt); color: var(--matn);
+  font-size: 14px; font-weight: 600; white-space: nowrap;
+}
+.chip:hover { border-color: var(--yashil-xira); }
+.chip[aria-pressed="true"] { background: var(--yashil); border-color: var(--yashil); color: var(--sirt); }
+
+/* Arabcha matn va o‘qilishi. Uzun duolar uchun shrift kichrayadi */
+.zikr-matn { display: grid; gap: 6px; width: 100%; max-width: 36rem; }
+.zikr-matn p { margin: 0; }
+.arabcha { font-family: var(--shrift-arab); font-size: clamp(32px, 8.5vw, 44px); line-height: 1.75; }
+.oqilishi { color: var(--yashil); font-style: italic; font-weight: 500; }
+.zikr-matn.orta .arabcha { font-size: clamp(24px, 6.4vw, 32px); line-height: 1.9; }
+.zikr-matn.uzun {
+  max-height: min(46vh, 380px); overflow-y: auto;          /* juda uzun matn ichida aylantiriladi */
+  padding: 10px 14px; border: 1px solid var(--chiziq); border-radius: 14px; background: var(--sirt);
+}
+.zikr-matn.uzun .arabcha { font-size: clamp(19px, 5vw, 23px); line-height: 2.05; }
+.zikr-matn.uzun .oqilishi { font-size: 15px; }
+
+/* Tasbeh doirasi: saytning asosiy tugmasi */
+.tasbeh {
+  position: relative; width: min(80vw, 340px); aspect-ratio: 1; padding: 0;
+  border: 0; border-radius: 50%; background: var(--sirt); color: var(--matn);
+  box-shadow: var(--soya), inset 0 0 0 1px var(--chiziq);
+  display: grid; place-items: center;
+  touch-action: manipulation;                 /* tez bosganda ekran kattalashib ketmasin */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  transition: transform .08s ease;
+}
+.tasbeh:active { transform: scale(.975); }
+.tasbeh svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ip { fill: none; stroke: var(--chiziq); stroke-width: 1.5; }   /* donalar terilgan ip */
+.dona { fill: var(--bosh-dona); transition: fill .15s ease; }
+.dona.yoniq { fill: var(--yashil); }
+.tasbeh.tabrik .dona { fill: var(--oltin); }
+.imom { fill: var(--oltin); }                                    /* tasbeh boshi */
+.markaz { position: relative; display: grid; justify-items: center; gap: 2px; }
+.raqam { font-size: clamp(60px, 19vw, 88px); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.tasbeh.tabrik .raqam { color: var(--oltin); }
+.maqsad-yozuv { font-size: 15px; font-weight: 600; color: var(--xira); }
+.ishora { font-size: 13px; color: var(--xira); margin-top: 8px; max-width: 12rem; }
+
+/* Doira ostidagi bugungi hisob va boshqaruv tugmalari */
+.davra {
+  font-size: 14px; font-weight: 600; color: var(--xira);
+  padding: 6px 14px; border-radius: 999px; background: var(--yashil-och);
+}
+.davra b { color: var(--matn); }
+.boshqaruv { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.tugma {
+  min-height: 44px; padding: 10px 16px; border-radius: 12px;
+  border: 1px solid var(--chiziq); background: var(--sirt); color: var(--matn);
+  font-size: 15px; font-weight: 600;
+}
+.tugma:hover:not(:disabled) { border-color: var(--yashil-xira); }
+.tugma:disabled { opacity: .45; cursor: default; }
+.tugma.asosiy-tugma { background: var(--yashil); border-color: var(--yashil); color: var(--sirt); }
+.tugma.xavfli { color: var(--xavf); border-color: color-mix(in oklab, var(--xavf) 35%, var(--sirt)); }
+.tugma.xavfli-tola { background: var(--xavf); border-color: var(--xavf); color: var(--sirt); }
+
+/* Maqsad tanlash (33, 70, 100 ...) */
+.maqsadlar { display: grid; justify-items: center; gap: 8px; }
+.maqsadlar-nomi { font-size: 14px; color: var(--xira); }
+.maqsad-tugmalar { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.maqsad {
+  min-width: 46px; min-height: 40px; padding: 6px 11px; border-radius: 10px;
+  border: 1px solid var(--chiziq); background: transparent; color: var(--matn);
+  font-size: 14px; font-weight: 600;
+}
+.maqsad:hover { border-color: var(--yashil-xira); }
+.maqsad[aria-pressed="true"] { background: var(--yashil-och); border-color: var(--yashil); color: var(--yashil); }
+
+/* Duoning ma’nosi va manbasi */
+.izoh {
+  width: 100%; max-width: 36rem; text-align: left; display: grid; gap: 8px;
+  padding: 2px 0 2px 16px; border-left: 3px solid var(--yashil-xira);
+}
+.izoh p { margin: 0; }
+.izoh .manba { font-size: 14px; color: var(--xira); }
+
+/* ======================================================================
+   4-QISM. O‘NG USTUN: hisob, sozlamalar, ma’lumot
+   ====================================================================== */
+.chap { display: grid; gap: 22px; align-content: start; }
+.yon { display: grid; gap: 16px; }
+.panel {
+  background: var(--sirt); border: 1px solid var(--chiziq); border-radius: 18px;
+  padding: 20px; display: grid; gap: 16px;
+}
+.panel h2 { font-size: 20px; font-weight: 700; }
+
+/* Raqamli kartochkalar */
+.statlar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--yashil-och); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat-son { font-size: 28px; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
+.stat-nom { font-size: 13px; font-weight: 500; color: var(--xira); }
+
+/* So‘nggi 7 kun grafigi */
+.grafik { margin: 0; display: grid; gap: 8px; position: relative; }
+.grafik figcaption { font-size: 15px; font-weight: 700; }
+.grafik-tana { display: grid; grid-template-columns: 38px minmax(0, 1fr); padding-top: 24px; }
+.oq-yozuvlar, .maydon { position: relative; height: 140px; }
+.oq-yozuvlar span {
+  position: absolute; right: 8px; transform: translateY(50%);
+  font-size: 11px; line-height: 1; color: var(--xira); font-variant-numeric: tabular-nums;
+}
+.maydon { border-bottom: 1px solid var(--chiziq); }
+.tor { position: absolute; left: 0; right: 0; height: 1px; background: var(--chiziq); }
+.ustunlar { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.ustun { position: relative; border-radius: 6px 6px 0 0; }
+.ustun .bar {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: min(24px, 60%); height: var(--h, 0%);
+  background: var(--yashil-xira); border-radius: 4px 4px 0 0;
+  transition: height .25s ease;
+}
+.ustun.bugungi .bar { background: var(--yashil); }
+.ustun .yorliq {
+  position: absolute; left: 50%; bottom: calc(var(--h, 0%) + 4px); transform: translateX(-50%);
+  font-size: 12px; font-weight: 700; color: var(--matn); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.kun-nomlari {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); margin-left: 38px;
+  font-size: 12px; color: var(--xira); text-align: center;
+}
+.kun-nomlari .bugungi { color: var(--matn); font-weight: 700; }
+.maslahat {
+  position: absolute; z-index: 3; left: 0; top: 0; transform: translate(-50%, -100%);
+  background: var(--matn); color: var(--sirt); font-size: 13px; font-weight: 600;
+  padding: 6px 10px; border-radius: 8px; white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity .12s ease;
+}
+.maslahat.korinadi { opacity: 1; }
+.yashirin {             /* ko‘rinmaydi, lekin ekran o‘quvchi dasturlar o‘qiydi */
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Sozlamalar: yoqish/o‘chirish almashtirgichlari */
+.qatorlar { display: grid; }
+.qator {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 0; border-top: 1px solid var(--chiziq); cursor: pointer;
+}
+.qator:first-child { border-top: 0; padding-top: 0; }
+.qator-matn { display: grid; gap: 2px; font-weight: 600; }
+.qator-matn small { font-size: 13px; font-weight: 400; color: var(--xira); }
+.almashtirgich {
+  appearance: none; -webkit-appearance: none; margin: 0; flex: none;
+  width: 46px; height: 28px; border-radius: 999px; background: var(--bosh-dona);
+  position: relative; cursor: pointer; transition: background .2s ease;
+}
+.almashtirgich::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: transform .2s ease;
+}
+.almashtirgich:checked { background: var(--yashil); }
+.almashtirgich:checked::after { transform: translateX(18px); }
+.almashtirgich:disabled { opacity: .4; cursor: not-allowed; }
+.eslatma { margin: 0; font-size: 13px; color: var(--xira); }
+.panel .tugma.xavfli { justify-self: start; }
+
+/* Istig‘for fazilati: oyat va hadislar */
+blockquote { margin: 0; padding: 2px 0 2px 14px; border-left: 3px solid var(--yashil-xira); display: grid; gap: 6px; }
+blockquote p { margin: 0; }
+blockquote .arabcha-kichik { font-family: var(--shrift-arab); font-size: 23px; line-height: 2; text-align: right; }
+cite { font-style: normal; font-size: 13px; color: var(--xira); }
+
+/* Qanday foydalaniladi */
+.royxat { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+kbd {
+  font-family: var(--shrift-matn); font-size: 13px; padding: 1px 6px;
+  border: 1px solid var(--chiziq); border-bottom-width: 2px; border-radius: 6px; background: var(--fon);
+}
+
+.oxiri { text-align: center; color: var(--xira); font-size: 14px; }
+
+/* So‘rov oynasi ("Rostdan ham?") */
+dialog {
+  border: 0; border-radius: 18px; padding: 22px; width: min(380px, calc(100% - 32px));
+  background: var(--sirt); color: var(--matn); box-shadow: 0 24px 70px rgb(0 0 0 / 30%);
+}
+dialog::backdrop { background: rgb(8 18 15 / 45%); }
+dialog p { margin: 0 0 18px; }
+.dialog-tugmalar { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+/* Pastdan chiqadigan qisqa xabar */
+.xabar {
+  position: fixed; left: 50%; bottom: 24px; z-index: 10;
+  transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  width: max-content; max-width: calc(100% - 32px); text-align: center;
+  background: var(--matn); color: var(--sirt); font-size: 15px; font-weight: 600;
+  padding: 12px 18px; border-radius: 14px; box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.xabar.korinadi { opacity: 1; transform: translate(-50%, 0); }
+
+/* Harakatni kamaytirishni tanlagan foydalanuvchilar uchun animatsiyalarsiz */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="sahifa">
+
+  <!-- ================= TEPA QISM: belgi, nom va bugungi sana ================= -->
+  <header class="bosh">
+    <div class="belgi" aria-hidden="true">
+      <!-- Sakkiz qirrali yulduz: ikki kvadrat ustma-ust, biri 45° burilgan -->
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="5" y="5" width="14" height="14" rx="1.5"></rect>
+        <rect x="5" y="5" width="14" height="14" rx="1.5" transform="rotate(45 12 12)"></rect>
+        <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </div>
+    <div>
+      <h1>Istig‘for sanagichi</h1>
+      <p id="bugungiSana">Bugun</p>
+    </div>
+  </header>
+
+  <main class="asosiy">
+
+    <!-- ================= CHAP USTUN: SANASH VA FAZILAT ================= -->
+    <div class="chap">
+    <section class="sanash" aria-label="Sanash">
+
+      <!-- Duo tanlash tugmalari. Ularni JavaScript ZIKRLAR ro‘yxatidan yasaydi -->
+      <div class="zikrlar" id="zikrlar" role="group" aria-label="Duoni tanlang"></div>
+
+      <!-- Tanlangan duoning arabcha matni va lotincha o‘qilishi -->
+      <div class="zikr-matn" id="zikrMatn">
+        <p class="arabcha" id="arabcha" lang="ar" dir="rtl"></p>
+        <p class="oqilishi" id="oqilishi"></p>
+      </div>
+
+      <!-- Asosiy tugma: tasbeh doirasi. Har bosish = bitta istig‘for -->
+      <button class="tasbeh" id="tasbeh" type="button" aria-label="Istig‘for sanash">
+        <svg id="donalar" viewBox="0 0 300 300" aria-hidden="true"></svg>
+        <span class="markaz">
+          <span class="raqam" id="raqam" aria-live="polite">0</span>
+          <span class="maqsad-yozuv" id="maqsadYozuv">/ 100</span>
+          <span class="ishora" id="ishora">Sanash uchun doirani bosing</span>
+        </span>
+      </button>
+
+      <!-- Bugungi hisob va davralar soni -->
+      <span class="davra" id="davra">Bugun <b>0</b> · Davra <b>0</b></span>
+
+      <!-- Boshqaruv: oxirgi sanoqni bekor qilish va davrani qaytadan boshlash -->
+      <div class="boshqaruv">
+        <button class="tugma" id="orqaga" type="button" title="Oxirgi sanoqni bekor qilish" aria-label="Oxirgi sanoqni bekor qilish">−1</button>
+        <button class="tugma" id="qaytadan" type="button">Qaytadan boshlash</button>
+      </div>
+
+      <!-- Maqsad: bir davrada nechta aytiladi. Tugmalarni JavaScript qo‘shadi -->
+      <div class="maqsadlar">
+        <span class="maqsadlar-nomi" id="maqsadNomi">Bir davrada nechta aytiladi</span>
+        <div class="maqsad-tugmalar" id="maqsadlar" role="group" aria-labelledby="maqsadNomi"></div>
+      </div>
+
+      <!-- Tanlangan duoning ma’nosi va manbasi -->
+      <div class="izoh">
+        <p id="manosi"></p>
+        <p class="manba" id="manba"></p>
+      </div>
+    </section>
+
+      <!-- Istig‘for fazilati: oyat va hadislar -->
+      <section class="panel" aria-labelledby="fazSarlavha">
+        <h2 id="fazSarlavha">Istig‘for fazilati</h2>
+        <blockquote>
+          <p class="arabcha-kichik" lang="ar" dir="rtl">فَقُلْتُ اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا (١٠) يُرْسِلِ السَّمَاءَ عَلَيْكُمْ مِدْرَارًا (١١) وَيُمْدِدْكُمْ بِأَمْوَالٍ وَبَنِينَ وَيَجْعَلْ لَكُمْ جَنَّاتٍ وَيَجْعَلْ لَكُمْ أَنْهَارًا (١٢)</p>
+          <p>Nuh (a.s.) qavmiga aytdi: «Robbingizdan mag‘firat so‘ranglar, albatta U o‘ta mag‘firatli Zotdir. U osmondan sizlarga mo‘l-ko‘l yomg‘ir yog‘diradi, mol-mulk va farzandlar bilan madad beradi, sizlarga bog‘lar va anhorlar ato etadi.»</p>
+          <cite>Qur’oni karim, Nuh surasi, 10–12-oyatlar. Ma’nosi sodda tilda berildi.</cite>
+        </blockquote>
+        <blockquote>
+          <p>«Ey odamlar, Allohga tavba qilinglar. Men Unga kuniga yuz marta tavba qilaman.»</p>
+          <cite>Payg‘ambarimiz (s.a.v.) hadisi. Imom Muslim, 2702.</cite>
+        </blockquote>
+        <blockquote>
+          <p>«Amal daftarida ko‘p istig‘for topgan kishiga xushxabar bo‘lsin!»</p>
+          <cite>Payg‘ambarimiz (s.a.v.) hadisi. Ibn Moja, 3818.</cite>
+        </blockquote>
+      </section>
+
+    </div>
+
+    <!-- ================= O‘NG USTUN ================= -->
+    <div class="yon">
+
+      <!-- Hisob: raqamli kartochkalar va so‘nggi 7 kun grafigi -->
+      <section class="panel" aria-labelledby="hisobSarlavha">
+        <h2 id="hisobSarlavha">Hisob</h2>
+        <div class="statlar">
+          <div class="stat"><span class="stat-son" id="statBugun">0</span><span class="stat-nom">Bugun</span></div>
+          <div class="stat"><span class="stat-son" id="statDavralar">0</span><span class="stat-nom">Bugungi davralar</span></div>
+          <div class="stat"><span class="stat-son" id="statKetma">0</span><span class="stat-nom">Ketma-ket kunlar</span></div>
+          <div class="stat"><span class="stat-son" id="statJami">0</span><span class="stat-nom">Jami</span></div>
+        </div>
+
+        <figure class="grafik" id="grafik">
+          <figcaption>So‘nggi 7 kun</figcaption>
+          <div class="grafik-tana">
+            <div class="oq-yozuvlar" id="oqYozuvlar" aria-hidden="true"></div>
+            <div class="maydon">
+              <span class="tor" style="bottom: 50%"></span>
+              <span class="tor" style="bottom: 100%"></span>
+              <div class="ustunlar" id="ustunlar"></div>
+            </div>
+          </div>
+          <div class="kun-nomlari" id="kunNomlari" aria-hidden="true"></div>
+          <div class="maslahat" id="maslahat" aria-hidden="true"></div>
+          <!-- Xuddi shu ma’lumot jadval ko‘rinishida (ekran o‘quvchi dasturlar uchun) -->
+          <table class="yashirin">
+            <caption>So‘nggi 7 kundagi istig‘forlar soni</caption>
+            <thead><tr><th scope="col">Kun</th><th scope="col">Soni</th></tr></thead>
+            <tbody id="jadval"></tbody>
+          </table>
+        </figure>
+      </section>
+
+      <!-- Sozlamalar -->
+      <section class="panel" aria-labelledby="sozSarlavha">
+        <h2 id="sozSarlavha">Sozlamalar</h2>
+        <div class="qatorlar">
+          <label class="qator" for="sozTebranish">
+            <span class="qator-matn">Tebranish<small id="tebranishIzoh">Har bosishda telefon biroz titraydi</small></span>
+            <input type="checkbox" role="switch" class="almashtirgich" id="sozTebranish">
+          </label>
+          <label class="qator" for="sozOvoz">
+            <span class="qator-matn">Ovoz<small>Har bosishda yumshoq «tiq» ovozi</small></span>
+            <input type="checkbox" role="switch" class="almashtirgich" id="sozOvoz">
+          </label>
+          <label class="qator" for="sozEkran">
+            <span class="qator-matn">Ekran o‘chmasin<small id="ekranIzoh">Uzoq zikr paytida ekran yoniq turadi</small></span>
+            <input type="checkbox" role="switch" class="almashtirgich" id="sozEkran">
+          </label>
+        </div>
+        <p class="eslatma">Hisob shu qurilmadagi brauzerda saqlanadi va hech qayerga yuborilmaydi. Brauzer ma’lumotlarini tozalasangiz, hisob ham o‘chadi.</p>
+        <button class="tugma xavfli" id="ochirishTugmasi" type="button">Barcha hisobni o‘chirish</button>
+      </section>
+
+      <!-- Qanday foydalaniladi -->
+      <section class="panel" aria-labelledby="yoSarlavha">
+        <h2 id="yoSarlavha">Qanday foydalaniladi</h2>
+        <ul class="royxat">
+          <li>Doirani bosing: har bosish bitta istig‘for. Kompyuterda <kbd>Space</kbd> yoki <kbd>Enter</kbd> ham sanaydi, <kbd>Backspace</kbd> oxirgisini bekor qiladi.</li>
+          <li>Yuqoridan duoni, pastdan maqsadni tanlang. Maqsadga yetganda donalar oltin rangga kiradi, davra hisoblanadi va sanoq boshidan boshlanadi.</li>
+          <li>Har bir duoning o‘z sanog‘i bor, duoni almashtirsangiz hisob yo‘qolmaydi.</li>
+          <li>Tebranish va «Ekran o‘chmasin» hamma brauzerda ham ishlamaydi. Masalan, iPhone’dagi Safari tebranishni qo‘llamaydi.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="oxiri">Alloh barchamizning istig‘forlarimizni qabul qilsin.</footer>
+</div>
+
+<!-- "Rostdan ham?" so‘rov oynasi (o‘chirishdan oldin) -->
+<dialog id="dialog" aria-labelledby="dialogMatn">
+  <p id="dialogMatn"></p>
+  <div class="dialog-tugmalar">
+    <button class="tugma" id="dialogYoq" type="button">Bekor qilish</button>
+    <button class="tugma asosiy-tugma" id="dialogHa" type="button">Ha</button>
+  </div>
+</dialog>
+
+<!-- Pastdan chiqadigan qisqa xabar -->
+<div class="xabar" id="xabar" role="status" aria-live="polite"></div>
+
+<script>
+/* ======================================================================
+   5-QISM. JAVASCRIPT: saytning "miyasi"
+   Bo‘limlar tartibi:
+     A) Duolar ro‘yxati
+     B) Holat (hamma sanoqlar) va uni brauzer xotirasiga saqlash
+     C) Sana va sonlar bilan ishlovchi yordamchi funksiyalar
+     D) Asosiy amallar: sanash, bekor qilish, qaytadan boshlash, o‘chirish
+     E) Tebranish, ovoz va ekranni yoniq tutish
+     F) Ekranni yangilash (chizish) va grafik
+     G) Tugmalarni ulash va saytni ishga tushirish
+   ====================================================================== */
+
+/* ---------- A) DUOLAR RO‘YXATI ----------
+   Har bir duo bitta obyekt:
+     id       — ichki nom (takrorlanmasin, faqat lotin harflari)
+     nomi     — tugmadagi qisqa nom
+     arabcha  — asl matn
+     oqilishi — lotin harflarida o‘qilishi
+     manosi   — o‘zbekcha ma’nosi
+     manba    — qaysi hadisda kelgani
+   Yangi duo qo‘shish uchun shu ro‘yxatga xuddi shunday yangi blok qo‘shing. */
+const ZIKRLAR = [
+  {
+    id: "astagfirulloh",
+    nomi: "Astag‘firulloh",
+    arabcha: "أَسْتَغْفِرُ اللَّهَ",
+    oqilishi: "Astag‘firulloh",
+    manosi: "Allohdan mag‘firat so‘rayman (gunohlarimni kechirishini so‘rayman).",
+    manba: "Payg‘ambarimiz (s.a.v.) namozni tugatganlarida uch marta istig‘for aytar edilar. Imom Muslim, 591."
+  },
+  {
+    id: "atubu",
+    nomi: "Va atuubu ilayh",
+    arabcha: "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+    oqilishi: "Astag‘firulloha va atuubu ilayh",
+    manosi: "Allohdan mag‘firat so‘rayman va Unga tavba qilaman.",
+    manba: "Payg‘ambarimiz (s.a.v.): «Allohga qasamki, men bir kunda yetmish martadan ko‘proq Allohdan mag‘firat so‘rayman va Unga tavba qilaman», dedilar. Imom Buxoriy, 6307."
+  },
+  {
+    id: "sayyidul",
+    nomi: "Sayyidul istig‘for",
+    arabcha: "اللَّهُمَّ أَنْتَ رَبِّي، لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    oqilishi: "Allohumma anta Robbiy, laa ilaaha illaa anta, xolaqtaniy va ana ’abduka, va ana ’alaa ’ahdika va va’dika mastato’tu, a’uuzu bika min sharri maa sona’tu, abuu-u laka bini’matika ’alayya, va abuu-u laka bizanbiy, fag‘fir liy, fa innahu laa yag‘firuz-zunuuba illaa anta.",
+    manosi: "Allohim, Sen mening Robbimsan, Sendan o‘zga iloh yo‘q. Meni Sen yaratding, men Sening bandangman. Qurbim yetganicha Senga bergan ahdim va va’damda turibman. Qilgan ishlarimning yomonligidan Sendan panoh so‘rayman. Menga bergan ne’matlaringni e’tirof etaman, gunohimni ham e’tirof etaman. Meni mag‘firat qil, zero gunohlarni Sendan boshqa hech kim kechirmaydi.",
+    manba: "Payg‘ambarimiz (s.a.v.) buni «istig‘forlarning sayyidi» deb atadilar. Kim uni kunduzi ishonib aytsa va kech kirmasdan vafot etsa, jannat ahlidan bo‘ladi. Kechasi aytib, tong otmasdan vafot etsa ham shunday. Imom Buxoriy, 6306."
+  },
+  {
+    id: "robbigfirliy",
+    nomi: "Robbig‘fir liy",
+    arabcha: "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ، إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+    oqilishi: "Robbig‘fir liy va tub ’alayya, innaka antat-Tavvaabur-Rohiym.",
+    manosi: "Robbim, meni mag‘firat qil va tavbamni qabul qil. Albatta, Sen tavbalarni ko‘p qabul qiluvchi, rahmli Zotsan.",
+    manba: "Ibn Umar (r.a.): «Biz Rasululloh (s.a.v.) bir majlisning o‘zida shu duoni yuz marta aytganlarini sanar edik», degan. Abu Dovud, 1516; Termiziy, 3434."
+  },
+  {
+    id: "hayyulqayyum",
+    nomi: "Hayyul Qayyum",
+    arabcha: "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ",
+    oqilishi: "Astag‘firullohallaziy laa ilaaha illaa huval-Hayyal-Qoyyuuma va atuubu ilayh.",
+    manosi: "O‘zidan boshqa iloh bo‘lmagan, doimo tirik va hamma narsani tutib turuvchi Allohdan mag‘firat so‘rayman va Unga tavba qilaman.",
+    manba: "Payg‘ambarimiz (s.a.v.): «Kim shuni aytsa, jangdan qochgan bo‘lsa ham, gunohi kechiriladi», dedilar. Abu Dovud, 1517; Termiziy, 3577."
+  }
+];
+
+const MAQSADLAR = [33, 70, 100, 300, 1000, 0];  // bir davradagi son; 0 = maqsadsiz (cheksiz)
+const DONALAR_SONI = 33;                         // tasbehdagi donalar soni (klassik 33 talik tasbeh)
+
+
+/* ---------- B) HOLAT VA SAQLASH ----------
+   "holat" — saytning butun xotirasi. Masalan:
+   {
+     zikr: "astagfirulloh",                                ← hozir tanlangan duo
+     maqsad: 100,                                          ← bir davrada nechta
+     joriy: { astagfirulloh: 47 },                         ← har bir duoning hozirgi davradagi sanog‘i
+     kunlar: { "2026-11-22": { jami: 247, davralar: 2 } }, ← har kungi hisob
+     umumiy: 5310,                                         ← butun vaqt davomidagi jami
+     sozlamalar: { tebranish: true, ovoz: false, ekran: false }
+   }
+   Har o‘zgarishdan keyin holat brauzer xotirasiga (localStorage) yoziladi,
+   shuning uchun sahifani yopib qayta ochsangiz ham hisob saqlanib qoladi. */
+const SAQLASH_KALITI = "istigfor-sanagich-v1";
+
+function boshlangichHolat() {
+  return {
+    zikr: ZIKRLAR[0].id,
+    maqsad: 100,
+    joriy: {},
+    kunlar: {},
+    umumiy: 0,
+    sozlamalar: { tebranish: true, ovoz: false, ekran: false }
+  };
+}
+
+/* Brauzer xotirasidan o‘qiydi. Xotira bo‘sh yoki buzilgan bo‘lsa, toza holatdan boshlaydi */
+function yuklash() {
+  const toza = boshlangichHolat();
+  try {
+    const matn = localStorage.getItem(SAQLASH_KALITI);
+    if (!matn) return toza;
+    const s = JSON.parse(matn);
+    return {
+      zikr: ZIKRLAR.some(z => z.id === s.zikr) ? s.zikr : toza.zikr,
+      maqsad: MAQSADLAR.includes(s.maqsad) ? s.maqsad : toza.maqsad,
+      joriy: s.joriy || {},
+      kunlar: s.kunlar || {},
+      umumiy: Number(s.umumiy) || 0,
+      sozlamalar: { ...toza.sozlamalar, ...(s.sozlamalar || {}) }
+    };
+  } catch (xato) {
+    return toza;
+  }
+}
+
+/* Brauzer xotirasiga yozadi */
+function saqlash() {
+  try {
+    localStorage.setItem(SAQLASH_KALITI, JSON.stringify(holat));
+  } catch (xato) {
+    // Ba’zi brauzerlarda (masalan, maxfiy rejimda) xotira yopiq bo‘ladi.
+    // Bunda sanash ishlayveradi, faqat sahifa yopilganda hisob saqlanmaydi.
+  }
+}
+
+let holat = yuklash();
+
+
+/* ---------- C) YORDAMCHI FUNKSIYALAR: sana va sonlar ---------- */
+const OYLAR = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+const HAFTA_KUNLARI = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];  // getDay(): 0 = yakshanba
+const QISQA_KUNLAR = ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"];
+
+/* Sanani "2026-11-22" ko‘rinishidagi kalitga aylantiradi (mahalliy vaqt bo‘yicha) */
+function sanaKaliti(sana) {
+  const oy = String(sana.getMonth() + 1).padStart(2, "0");
+  const kun = String(sana.getDate()).padStart(2, "0");
+  return `${sana.getFullYear()}-${oy}-${kun}`;
+}
+
+/* Bugundan n kun oldingi sana (0 = bugun, 1 = kecha ...) */
+function kunlarOldin(n) {
+  const sana = new Date();
+  sana.setHours(12, 0, 0, 0);
+  sana.setDate(sana.getDate() - n);
+  return sana;
+}
+
+/* Berilgan kunning hisobi (yozuv bo‘lmasa — nollar) */
+function kunMalumoti(sana) {
+  return holat.kunlar[sanaKaliti(sana)] || { jami: 0, davralar: 0 };
+}
+
+/* Bugungi kun yozuvi; bo‘lmasa yangisini ochadi */
+function bugungiYozuv() {
+  const kalit = sanaKaliti(new Date());
+  if (!holat.kunlar[kalit]) holat.kunlar[kalit] = { jami: 0, davralar: 0 };
+  return holat.kunlar[kalit];
+}
+
+/* "22-noyabr, yakshanba" */
+function sanaMatni(sana) {
+  return `${sana.getDate()}-${OYLAR[sana.getMonth()]}, ${HAFTA_KUNLARI[sana.getDay()]}`;
+}
+
+/* "Yakshanba, 22-noyabr" */
+function toliqSana(sana) {
+  const kun = HAFTA_KUNLARI[sana.getDay()];
+  return `${kun[0].toUpperCase() + kun.slice(1)}, ${sana.getDate()}-${OYLAR[sana.getMonth()]}`;
+}
+
+/* Necha kun ketma-ket istig‘for aytilgan. Bugun hali aytilmagan bo‘lsa, kechadan sanaydi */
+function ketmaKetKunlar() {
+  let n = kunMalumoti(kunlarOldin(0)).jami > 0 ? 0 : 1;
+  let soni = 0;
+  while (kunMalumoti(kunlarOldin(n)).jami > 0) {
+    soni += 1;
+    n += 1;
+  }
+  return soni;
+}
+
+/* 1234567 → "1 234 567" (minglar orasiga bo‘sh joy) */
+function formatla(son) {
+  return String(son).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+/* Grafik uchun qisqa yozuv: 10 000 dan boshlab "12,3K" */
+function qisqaSon(son) {
+  if (son < 10000) return formatla(son);
+  return String(Math.round(son / 100) / 10).replace(".", ",") + "K";
+}
+
+/* Grafik o‘qining yuqori chegarasi: 10, 20, 50, 100, 200, 500 ... */
+function chiroyliChegara(son) {
+  if (son <= 10) return 10;
+  const daraja = Math.pow(10, Math.floor(Math.log10(son)));
+  for (const k of [1, 2, 5, 10]) {
+    if (k * daraja >= son) return k * daraja;
+  }
+  return 10 * daraja;
+}
+
+function joriyZikr() {
+  return ZIKRLAR.find(z => z.id === holat.zikr) || ZIKRLAR[0];
+}
+
+
+/* ---------- D) ASOSIY AMALLAR ---------- */
+let tabrik = false;          // davra tugagan zahoti 1,5 soniya oltin rangda ko‘rsatish uchun
+let tabrikTaymeri = null;
+
+/* Doirani bosganda ishlaydi: +1 */
+function sanash() {
+  // Oldingi davra tabrigi hali ko‘rinib turgan bo‘lsa, uni darhol yopamiz
+  if (tabrik) {
+    tabrik = false;
+    clearTimeout(tabrikTaymeri);
+  }
+
+  const id = holat.zikr;
+  const kun = bugungiYozuv();
+  holat.joriy[id] = (holat.joriy[id] || 0) + 1;   // davradagi sanoq
+  kun.jami += 1;                                   // bugungi jami
+  holat.umumiy += 1;                               // umumiy jami
+
+  // Maqsadga yetdikmi? (maqsad 0 bo‘lsa — cheksiz, tekshirilmaydi)
+  if (holat.maqsad > 0 && holat.joriy[id] >= holat.maqsad) {
+    kun.davralar += 1;
+    holat.joriy[id] = 0;           // yangi davra boshlanadi
+    davraTugadi();
+  } else {
+    tebrat(12);                    // qisqa tebranish
+    ovozChiqar(false);             // qisqa "tiq" (yoqilgan bo‘lsa)
+  }
+
+  saqlash();
+  chizish();
+  raqamniSakrat();
+}
+
+/* Davra tugaganda: oltin donalar, kuchliroq tebranish va tabrik xabari */
+function davraTugadi() {
+  tabrik = true;
+  tebrat([90, 60, 90]);
+  ovozChiqar(true);
+  xabarKorsat(`${formatla(holat.maqsad)} ta istig‘for aytildi. Alloh qabul qilsin!`);
+  tabrikTaymeri = setTimeout(() => {
+    tabrik = false;
+    chizish();
+  }, 1500);
+}
+
+/* "−1": oxirgi sanoqni bekor qiladi */
+function bittaOrqaga() {
+  const id = holat.zikr;
+  if (!holat.joriy[id]) return;    // davrada hech narsa yo‘q — bekor qiladigan narsa ham yo‘q
+  holat.joriy[id] -= 1;
+  const kun = bugungiYozuv();
+  kun.jami = Math.max(0, kun.jami - 1);
+  holat.umumiy = Math.max(0, holat.umumiy - 1);
+  saqlash();
+  chizish();
+}
+
+/* Hozirgi davrani 0 dan boshlaydi (bugungi va umumiy hisob o‘zgarmaydi) */
+async function davraniQaytadan() {
+  const id = holat.zikr;
+  if (!holat.joriy[id]) return;
+  const ha = await soraymiz(
+    "Hozirgi davradagi sanoq 0 ga tushirilsinmi? Bugungi va umumiy hisob o‘zgarmaydi.",
+    "Ha, 0 dan boshlash"
+  );
+  if (!ha) return;
+  holat.joriy[id] = 0;
+  saqlash();
+  chizish();
+}
+
+/* Barcha hisobni o‘chiradi (tanlangan duo, maqsad va sozlamalar qoladi) */
+async function hammasiniOchirish() {
+  const ha = await soraymiz(
+    "Bugungi, kunlik va umumiy hisob butunlay o‘chirilsinmi? Buni qaytarib bo‘lmaydi.",
+    "Ha, o‘chirish",
+    true
+  );
+  if (!ha) return;
+  const { zikr, maqsad, sozlamalar } = holat;
+  holat = { ...boshlangichHolat(), zikr, maqsad, sozlamalar };
+  saqlash();
+  chizish();
+  xabarKorsat("Hisob tozalandi");
+}
+
+/* "Rostdan ham?" oynasini ochadi va javobni kutadi: true (ha) yoki false (yo‘q) */
+function soraymiz(savol, haYozuvi, xavfli = false) {
+  el.dialogMatn.textContent = savol;
+  el.dialogHa.textContent = haYozuvi;
+  el.dialogHa.classList.toggle("xavfli-tola", xavfli);
+  el.dialogHa.classList.toggle("asosiy-tugma", !xavfli);
+  el.dialog.returnValue = "";
+  el.dialog.showModal();
+  return new Promise((javob) => {
+    el.dialog.addEventListener("close", () => javob(el.dialog.returnValue === "ha"), { once: true });
+  });
+}
+
+/* Pastda 2-3 soniyaga qisqa xabar chiqaradi */
+let xabarTaymeri = null;
+function xabarKorsat(matn) {
+  el.xabar.textContent = matn;
+  el.xabar.classList.add("korinadi");
+  clearTimeout(xabarTaymeri);
+  xabarTaymeri = setTimeout(() => el.xabar.classList.remove("korinadi"), 2800);
+}
+
+
+/* ---------- E) TEBRANISH, OVOZ, EKRANNI YONIQ TUTISH ---------- */
+
+/* Telefonni titratadi. Ishlasa true, ishlamasa false qaytaradi */
+function tebrat(naqsh) {
+  if (!holat.sozlamalar.tebranish || typeof navigator.vibrate !== "function") return false;
+  try {
+    return navigator.vibrate(naqsh);
+  } catch (xato) {
+    return false;
+  }
+}
+
+/* Brauzerning o‘zida yasalgan yumshoq ovoz (tashqi fayl kerak emas) */
+let ovozKonteksti = null;
+function ovozChiqar(uzun) {
+  if (!holat.sozlamalar.ovoz) return;
+  try {
+    const AudioKontekst = window.AudioContext || window.webkitAudioContext;
+    if (!AudioKontekst) return;
+    ovozKonteksti = ovozKonteksti || new AudioKontekst();
+    if (ovozKonteksti.state === "suspended") ovozKonteksti.resume();
+
+    const t = ovozKonteksti.currentTime;
+    const davomiylik = uzun ? 0.6 : 0.09;          // soniya
+    const ton = ovozKonteksti.createOscillator();   // tovush manbai
+    const balandlik = ovozKonteksti.createGain();   // ovoz balandligi
+    ton.type = "sine";
+    ton.frequency.setValueAtTime(uzun ? 880 : 660, t);
+    balandlik.gain.setValueAtTime(0.0001, t);
+    balandlik.gain.exponentialRampToValueAtTime(0.2, t + 0.01);
+    balandlik.gain.exponentialRampToValueAtTime(0.0001, t + davomiylik);
+    ton.connect(balandlik).connect(ovozKonteksti.destination);
+    ton.start(t);
+    ton.stop(t + davomiylik + 0.05);
+  } catch (xato) {
+    // ovoz chiqmasa ham sanash davom etadi
+  }
+}
+
+/* Ekran o‘chib qolmasligi uchun (Wake Lock). Ishlasa true qaytaradi */
+let ekranQulfi = null;
+async function ekranniYoqiqTut() {
+  if (!holat.sozlamalar.ekran || !("wakeLock" in navigator) || document.visibilityState !== "visible") return false;
+  try {
+    ekranQulfi = await navigator.wakeLock.request("screen");
+    return true;
+  } catch (xato) {
+    return false;
+  }
+}
+function ekranQulfiniOchir() {
+  if (ekranQulfi) {
+    ekranQulfi.release().catch(() => {});
+    ekranQulfi = null;
+  }
+}
+
+
+/* ---------- F) EKRANNI YANGILASH ---------- */
+const el = {};   // sahifadagi elementlar: el.raqam, el.tasbeh ... (id bo‘yicha, pastda to‘ldiriladi)
+const kamHarakat = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+/* Holatga qarab sahifadagi hamma narsani yangilaydi */
+function chizish() {
+  const zikr = joriyZikr();
+  const sanoq = holat.joriy[zikr.id] || 0;
+  const bugun = kunMalumoti(new Date());
+
+  // 1) Sana
+  el.bugungiSana.textContent = "Bugun: " + sanaMatni(new Date());
+
+  // 2) Tanlangan duo matnlari (uzunligiga qarab shrift o‘lchami tanlanadi)
+  el.arabcha.textContent = zikr.arabcha;
+  el.oqilishi.textContent = zikr.oqilishi;
+  el.manosi.textContent = zikr.manosi;
+  el.manba.textContent = zikr.manba;
+  el.zikrMatn.classList.toggle("orta", zikr.arabcha.length > 35 && zikr.arabcha.length <= 100);
+  el.zikrMatn.classList.toggle("uzun", zikr.arabcha.length > 100);
+  el.zikrlar.querySelectorAll("button").forEach(t => {
+    t.setAttribute("aria-pressed", String(t.dataset.id === zikr.id));
+  });
+
+  // 3) Katta raqam, maqsad va tasbeh donalari
+  el.raqam.textContent = formatla(tabrik ? holat.maqsad : sanoq);
+  el.maqsadYozuv.textContent = holat.maqsad > 0 ? "/ " + formatla(holat.maqsad) : "maqsadsiz";
+  el.ishora.hidden = holat.umumiy > 0;          // maslahat faqat birinchi marta ko‘rinadi
+  el.tasbeh.classList.toggle("tabrik", tabrik);
+  const yoniq = yoniqDonalar(sanoq);
+  el.donalar.querySelectorAll(".dona").forEach((dona, i) => dona.classList.toggle("yoniq", i < yoniq));
+
+  // 4) Tugmalar holati
+  el.orqaga.disabled = sanoq === 0;
+  el.qaytadan.disabled = sanoq === 0;
+  el.maqsadlar.querySelectorAll("button").forEach(t => {
+    t.setAttribute("aria-pressed", String(Number(t.dataset.maqsad) === holat.maqsad));
+  });
+
+  // 5) Bugungi hisob va kartochkalar
+  el.davra.innerHTML = `Bugun <b>${formatla(bugun.jami)}</b> · Davra <b>${formatla(bugun.davralar)}</b>`;
+  el.statBugun.textContent = formatla(bugun.jami);
+  el.statDavralar.textContent = formatla(bugun.davralar);
+  el.statKetma.textContent = formatla(ketmaKetKunlar());
+  el.statJami.textContent = formatla(holat.umumiy);
+
+  // 6) So‘nggi 7 kun grafigi
+  haftaniChiz();
+
+  // 7) Sozlamalar
+  el.sozTebranish.checked = holat.sozlamalar.tebranish && !el.sozTebranish.disabled;
+  el.sozOvoz.checked = holat.sozlamalar.ovoz;
+  el.sozEkran.checked = holat.sozlamalar.ekran && !el.sozEkran.disabled;
+}
+
+/* Nechta dona yonishi kerak (33 tadan) */
+function yoniqDonalar(sanoq) {
+  if (tabrik) return DONALAR_SONI;
+  if (sanoq <= 0) return 0;
+  if (holat.maqsad > 0) {
+    // Maqsadga nisbatan: masalan, 100 dan 50 tasi aytilsa — donalarning yarmi
+    const ulush = Math.floor(sanoq * DONALAR_SONI / holat.maqsad);
+    return Math.min(DONALAR_SONI, Math.max(1, ulush));
+  }
+  // Maqsadsiz rejimda donalar 33 tadan aylanib yonadi
+  return ((sanoq - 1) % DONALAR_SONI) + 1;
+}
+
+/* Katta raqam har bosishda biroz "sakraydi" */
+function raqamniSakrat() {
+  if (kamHarakat.matches || typeof el.raqam.animate !== "function") return;
+  el.raqam.animate([{ transform: "scale(1.07)" }, { transform: "scale(1)" }], { duration: 160, easing: "ease-out" });
+}
+
+/* Tasbeh donalarini doira bo‘ylab chizadi (bir marta, sahifa ochilganda) */
+function donalarniYasash() {
+  const markaz = 150, radius = 128;
+  let svg = `<circle class="ip" cx="${markaz}" cy="${markaz}" r="${radius}"></circle>`;
+  for (let i = 0; i < DONALAR_SONI; i++) {
+    // Burchak tepadan boshlanib soat mili bo‘yicha oshadi
+    const burchak = (-90 + (i + 0.5) * 360 / DONALAR_SONI) * Math.PI / 180;
+    const x = markaz + radius * Math.cos(burchak);
+    const y = markaz + radius * Math.sin(burchak);
+    svg += `<circle class="dona" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="8"></circle>`;
+  }
+  svg += `<rect class="imom" x="146" y="2" width="8" height="17" rx="4"></rect>`;   // tasbeh boshi
+  el.donalar.innerHTML = svg;
+}
+
+/* Grafikning 7 ta ustuni, kun nomlari va jadval qatorlarini yasaydi (bir marta) */
+function grafikniYasash() {
+  for (let i = 0; i < 7; i++) {
+    const ustun = document.createElement("div");
+    ustun.className = "ustun";
+    ustun.tabIndex = 0;
+    ustun.setAttribute("role", "img");
+    ustun.innerHTML = '<span class="yorliq"></span><span class="bar"></span>';
+    el.ustunlar.appendChild(ustun);
+
+    el.kunNomlari.appendChild(document.createElement("span"));
+
+    const qator = document.createElement("tr");
+    qator.innerHTML = '<th scope="row"></th><td></td>';
+    el.jadval.appendChild(qator);
+  }
+}
+
+/* Grafikni joriy ma’lumot bilan yangilaydi */
+function haftaniChiz() {
+  // So‘nggi 7 kun: eng eskisidan bugungacha
+  const kunlar = [];
+  for (let n = 6; n >= 0; n--) {
+    const sana = kunlarOldin(n);
+    kunlar.push({ sana, jami: kunMalumoti(sana).jami, bugunmi: n === 0 });
+  }
+  const engKop = Math.max(...kunlar.map(k => k.jami));
+  const tepa = chiroyliChegara(engKop);
+  const engKopIndeks = kunlar.findIndex(k => k.jami === engKop);
+
+  // Chapdagi o‘q yozuvlari: 0, o‘rtasi, tepasi
+  el.oqYozuvlar.innerHTML = [0, tepa / 2, tepa]
+    .map((qiymat, i) => `<span style="bottom: ${i * 50}%">${qisqaSon(qiymat)}</span>`)
+    .join("");
+
+  const ustunlar = el.ustunlar.children;
+  const nomlar = el.kunNomlari.children;
+  const qatorlar = el.jadval.rows;
+  kunlar.forEach((k, i) => {
+    const matn = `${toliqSana(k.sana)}: ${formatla(k.jami)} ta`;
+    const ustun = ustunlar[i];
+    ustun.style.setProperty("--h", (k.jami / tepa * 100) + "%");
+    ustun.classList.toggle("bugungi", k.bugunmi);
+    ustun.dataset.matn = matn;
+    ustun.setAttribute("aria-label", matn);
+    // Raqam faqat bugungi va eng ko‘p aytilgan kun ustida yoziladi, qolganlari — sichqoncha bilan
+    const yozilsinmi = k.jami > 0 && (k.bugunmi || i === engKopIndeks);
+    ustun.querySelector(".yorliq").textContent = yozilsinmi ? qisqaSon(k.jami) : "";
+
+    nomlar[i].textContent = k.bugunmi ? "Bugun" : QISQA_KUNLAR[k.sana.getDay()];
+    nomlar[i].className = k.bugunmi ? "bugungi" : "";
+
+    qatorlar[i].cells[0].textContent = toliqSana(k.sana);
+    qatorlar[i].cells[1].textContent = k.jami;
+  });
+}
+
+/* Ustun ustiga kelganda (yoki bosganda) aniq sonni ko‘rsatadi */
+function maslahatKorsat(ustun) {
+  const m = el.maslahat;
+  m.textContent = ustun.dataset.matn;
+  const g = el.grafik.getBoundingClientRect();
+  const u = ustun.getBoundingClientRect();
+  const b = ustun.querySelector(".bar").getBoundingClientRect();
+  const yarim = m.offsetWidth / 2;
+  const x = Math.max(yarim, Math.min(g.width - yarim, u.left + u.width / 2 - g.left));  // chetga chiqib ketmasin
+  const y = (b.height > 0 ? b.top : u.bottom) - g.top - 10;
+  m.style.left = x + "px";
+  m.style.top = y + "px";
+  m.classList.add("korinadi");
+}
+function maslahatYashir() {
+  el.maslahat.classList.remove("korinadi");
+}
+
+
+/* ---------- G) TUGMALARNI ULASH VA ISHGA TUSHIRISH ---------- */
+
+/* id si bor hamma elementni el obyektiga yig‘adi: el.raqam, el.tasbeh ... */
+function elementlarniTop() {
+  document.querySelectorAll("[id]").forEach(e => { el[e.id] = e; });
+}
+
+/* Duo va maqsad tugmalarini ro‘yxatlardan yasaydi */
+function tugmalarniYasash() {
+  ZIKRLAR.forEach(z => {
+    const t = document.createElement("button");
+    t.type = "button";
+    t.className = "chip";
+    t.dataset.id = z.id;
+    t.textContent = z.nomi;
+    t.addEventListener("click", () => {
+      holat.zikr = z.id;
+      saqlash();
+      chizish();
+    });
+    el.zikrlar.appendChild(t);
+  });
+
+  MAQSADLAR.forEach(m => {
+    const t = document.createElement("button");
+    t.type = "button";
+    t.className = "maqsad";
+    t.dataset.maqsad = m;
+    t.textContent = m === 0 ? "∞" : formatla(m);
+    if (m === 0) t.setAttribute("aria-label", "Maqsadsiz");
+    t.addEventListener("click", () => {
+      holat.maqsad = m;
+      saqlash();
+      chizish();
+    });
+    el.maqsadlar.appendChild(t);
+  });
+}
+
+/* Qurilma imkoniyati yo‘q bo‘lsa, tegishli sozlamani o‘chirib qo‘yadi */
+function qurilmaImkoniyatlari() {
+  if (typeof navigator.vibrate !== "function") {
+    el.sozTebranish.disabled = true;
+    el.tebranishIzoh.textContent = "Bu qurilma yoki brauzerda mavjud emas";
+  }
+  if (!("wakeLock" in navigator)) {
+    el.sozEkran.disabled = true;
+    el.ekranIzoh.textContent = "Bu brauzerda mavjud emas";
+  }
+}
+
+/* Barcha tugma va klavishlarga vazifa biriktiradi */
+function hodisalarniUlash() {
+  el.tasbeh.addEventListener("click", sanash);
+  el.orqaga.addEventListener("click", bittaOrqaga);
+  el.qaytadan.addEventListener("click", davraniQaytadan);
+  el.ochirishTugmasi.addEventListener("click", hammasiniOchirish);
+  el.dialogHa.addEventListener("click", () => el.dialog.close("ha"));
+  el.dialogYoq.addEventListener("click", () => el.dialog.close("yoq"));
+
+  // Sozlamalar
+  el.sozTebranish.addEventListener("change", () => {
+    holat.sozlamalar.tebranish = el.sozTebranish.checked;
+    saqlash();
+    if (holat.sozlamalar.tebranish && !tebrat(40)) xabarKorsat("Bu sahifada tebranish ishlamayapti");
+  });
+  el.sozOvoz.addEventListener("change", () => {
+    holat.sozlamalar.ovoz = el.sozOvoz.checked;
+    saqlash();
+    ovozChiqar(false);   // yoqilganda namuna sifatida bir marta "tiq" etadi
+  });
+  el.sozEkran.addEventListener("change", async () => {
+    holat.sozlamalar.ekran = el.sozEkran.checked;
+    saqlash();
+    if (!holat.sozlamalar.ekran) {
+      ekranQulfiniOchir();
+    } else if (!(await ekranniYoqiqTut())) {
+      xabarKorsat("Bu sahifada ekranni yoniq tutib bo‘lmadi");
+    }
+  });
+
+  // Klaviatura: Space yoki Enter — sanash, Backspace — oxirgisini bekor qilish
+  document.addEventListener("keydown", (e) => {
+    if (el.dialog.open || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "Backspace" && !e.target.closest("input, textarea")) {
+      e.preventDefault();
+      bittaOrqaga();
+      return;
+    }
+    // Tugma ustida turgan bo‘lsa, brauzer o‘zi bosadi — ikki marta sanalmasin
+    if (e.target.closest("button, input, a, textarea, select, .ustun")) return;
+    if ((e.key === " " || e.key === "Enter") && !e.repeat) {
+      e.preventDefault();
+      sanash();
+    }
+  });
+
+  // Grafik ustunlari: sichqoncha, barmoq yoki Tab bilan kelganda aniq son
+  el.ustunlar.addEventListener("pointerover", (e) => {
+    const ustun = e.target.closest(".ustun");
+    if (ustun) maslahatKorsat(ustun);
+  });
+  el.ustunlar.addEventListener("pointerleave", (e) => {
+    if (e.pointerType === "mouse") maslahatYashir();
+  });
+  el.ustunlar.addEventListener("focusin", (e) => {
+    const ustun = e.target.closest(".ustun");
+    if (ustun) maslahatKorsat(ustun);
+  });
+  el.ustunlar.addEventListener("focusout", maslahatYashir);
+
+  // Sahifaga qaytilganda: sanani yangilash va ekran qulfini qayta so‘rash
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      chizish();
+      ekranniYoqiqTut();
+    }
+  });
+
+  // Sayt boshqa oynada ham ochiq bo‘lsa, o‘sha yerdagi o‘zgarishni bu yerga ham olib keladi
+  window.addEventListener("storage", (e) => {
+    if (e.key === SAQLASH_KALITI) {
+      holat = yuklash();
+      chizish();
+    }
+  });
+
+  // Har daqiqada yangilash: yarim tundan keyin "Bugun" o‘zi yangi kunga o‘tadi
+  setInterval(chizish, 60 * 1000);
+}
+
+/* Ishga tushirish */
+elementlarniTop();
+donalarniYasash();
+tugmalarniYasash();
+grafikniYasash();
+qurilmaImkoniyatlari();
+hodisalarniUlash();
+chizish();
+ekranniYoqiqTut();
+</script>
+</body>
+</html>
