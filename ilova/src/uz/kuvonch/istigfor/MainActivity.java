@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,18 +30,29 @@ import java.util.ArrayList;
  * Istig‘for sanagichi ilovasi.
  * Sayt (assets/index.html) telefonning ichida ochiladi, shuning uchun internetsiz ham ishlaydi.
  * Hisob telefon xotirasida (localStorage) saqlanadi va ilova yopilganda yo‘qolmaydi.
- * "Ovoz bilan sanash" uchun telefonning o‘z nutqni tanish xizmatidan foydalaniladi.
+ *
+ * Ovoz bilan sanashning ikki usuli:
+ *  1) «Ovoz bo‘yicha»: mikrofon ovoz balandligini o‘lchab, sahifaga yuboradi (internetsiz ishlaydi);
+ *  2) «So‘z bo‘yicha»: telefonning nutqni tanish xizmati gapni matnga aylantiradi.
  */
 public class MainActivity extends Activity {
 
     private static final int MIKROFON_SOROVI = 71;   // mikrofon ruxsati so‘rovining raqami
 
     private WebView sahifa;
+    private final Handler kutuvchi = new Handler(Looper.getMainLooper());
+
+    // «So‘z bo‘yicha» usuli
     private SpeechRecognizer tinglovchi;             // telefonning nutqni tanish xizmati
-    private boolean tinglash = false;                // "Ovoz bilan sanash" yoqiqmi
+    private boolean tinglash = false;                // so‘z bo‘yicha tinglash yoqiqmi
     private String tinglashTili = "ar-SA";           // istig‘for arabcha aytiladi
     private int xatolarKetmaKet = 0;                 // ketma-ket xatolar (cheksiz aylanib qolmaslik uchun)
-    private final Handler kutuvchi = new Handler(Looper.getMainLooper());
+
+    // «Ovoz bo‘yicha» usuli
+    private AudioRecord mikrofon;                    // mikrofondan ovoz yozib oluvchi
+    private Thread mikIshchisi;                      // mikrofonni orqada o‘qiydigan oqim
+    private volatile boolean mikIshlayapti = false;
+    private boolean mikKutilmoqda = false;           // ruxsat so‘ralgan, berilsa mikrofonni yoqish kerak
 
     @Override
     protected void onCreate(Bundle saqlanganHolat) {
@@ -85,8 +99,9 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         // Ilova orqa fonga o‘tsa, mikrofon yopiladi va sahifaga xabar beriladi
-        if (tinglash) {
+        if (tinglash || mikIshlayapti) {
             tinglashniToxtat();
+            mikniToxtat();
             sahifagaAyt("ovozToxtadi()");
         }
     }
@@ -94,27 +109,132 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         tinglashniToxtat();
+        mikniToxtat();
         if (sahifa != null) sahifa.destroy();
         super.onDestroy();
     }
 
-    /** Sahifadagi JavaScript funksiyasini chaqiradi */
+    /** Sahifadagi JavaScript kodini bajaradi */
     private void sahifagaAyt(String kod) {
         if (sahifa != null) sahifa.evaluateJavascript(kod, null);
     }
 
+    /** Mikrofonga ruxsat bormi; yo‘q bo‘lsa so‘raydi va false qaytaradi */
+    private boolean mikrofonRuxsati() {
+        if (Build.VERSION.SDK_INT >= 23
+                && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIKROFON_SOROVI);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int kod, String[] ruxsatlar, int[] natijalar) {
+        if (kod != MIKROFON_SOROVI) return;
+        if (natijalar.length > 0 && natijalar[0] == PackageManager.PERMISSION_GRANTED) {
+            if (mikKutilmoqda) mikniBoshla();
+            if (tinglash) tinglashniBoshla();
+        } else {
+            mikKutilmoqda = false;
+            tinglash = false;
+            sahifagaAyt("ovozXatosi('ruxsat')");
+        }
+    }
+
     // ------------------------------------------------------------------
-    // OVOZ BILAN SANASH
+    // 1-USUL: OVOZ BO‘YICHA — mikrofon ovoz balandligini sahifaga yuboradi
+    // ------------------------------------------------------------------
+
+    private void mikniBoshla() {
+        if (mikIshlayapti) return;
+        mikKutilmoqda = true;
+        if (!mikrofonRuxsati()) return;              // ruxsat berilsa, onRequestPermissionsResult qayta chaqiradi
+        mikKutilmoqda = false;
+
+        final int chastota = 16000;                  // sekundiga 16 000 o‘lchov
+        int minBufer = AudioRecord.getMinBufferSize(chastota, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+        if (minBufer <= 0) {
+            sahifagaAyt("ovozXatosi('mikYoq')");
+            return;
+        }
+        try {
+            mikrofon = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, chastota,
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, Math.max(minBufer, chastota));
+            if (mikrofon.getState() != AudioRecord.STATE_INITIALIZED) throw new IllegalStateException("mikrofon");
+            mikrofon.startRecording();
+        } catch (Exception xato) {
+            mikniToxtat();
+            sahifagaAyt("ovozXatosi('mikYoq')");
+            return;
+        }
+
+        mikIshlayapti = true;
+        final AudioRecord yozgich = mikrofon;
+        mikIshchisi = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                short[] kadr = new short[chastota / 40];     // 25 ms lik bo‘lak
+                StringBuilder toplam = new StringBuilder();
+                int soni = 0;
+                while (mikIshlayapti) {
+                    int oqildi = yozgich.read(kadr, 0, kadr.length);
+                    if (oqildi <= 0) continue;
+                    double yigindi = 0;
+                    for (int i = 0; i < oqildi; i++) {
+                        double q = kadr[i] / 32768.0;
+                        yigindi += q * q;
+                    }
+                    double db = 10 * Math.log10(yigindi / oqildi + 1e-12);   // ovoz balandligi, dB
+                    if (soni > 0) toplam.append(',');
+                    toplam.append(Math.round(db * 10) / 10.0);
+                    if (++soni >= 4) {                       // har 100 ms da sahifaga yuboramiz
+                        final String royxat = "[" + toplam + "]";
+                        toplam.setLength(0);
+                        soni = 0;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mikIshlayapti) sahifagaAyt("window.ovozDarajasi && window.ovozDarajasi(" + royxat + ")");
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        mikIshchisi.start();
+    }
+
+    private void mikniToxtat() {
+        mikIshlayapti = false;
+        mikKutilmoqda = false;
+        if (mikIshchisi != null) {
+            try {
+                mikIshchisi.join(300);
+            } catch (InterruptedException xato) {
+                // kutish to‘xtatildi
+            }
+            mikIshchisi = null;
+        }
+        if (mikrofon != null) {
+            try {
+                mikrofon.stop();
+            } catch (Exception xato) {
+                // allaqachon to‘xtagan
+            }
+            mikrofon.release();
+            mikrofon = null;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 2-USUL: SO‘Z BO‘YICHA — telefonning nutqni tanish xizmati
     // ------------------------------------------------------------------
 
     /** Tinglashni boshlaydi (kerak bo‘lsa, avval mikrofonga ruxsat so‘raydi) */
     private void tinglashniBoshla() {
         if (!tinglash) return;
-        if (Build.VERSION.SDK_INT >= 23
-                && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIKROFON_SOROVI);
-            return;
-        }
+        if (!mikrofonRuxsati()) return;
         if (!SpeechRecognizer.isRecognitionAvailable(this)) {
             tinglash = false;
             sahifagaAyt("ovozXatosi('yoq')");
@@ -161,17 +281,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int kod, String[] ruxsatlar, int[] natijalar) {
-        if (kod != MIKROFON_SOROVI) return;
-        if (natijalar.length > 0 && natijalar[0] == PackageManager.PERMISSION_GRANTED) {
-            tinglashniBoshla();
-        } else {
-            tinglash = false;
-            sahifagaAyt("ovozXatosi('ruxsat')");
-        }
-    }
-
     /** Nutqni tanish xizmatidan keladigan natijalar */
     private class Tinglovchi implements RecognitionListener {
         @Override public void onReadyForSpeech(Bundle p) { }
@@ -201,13 +310,13 @@ public class MainActivity extends Activity {
                 sahifagaAyt("ovozXatosi('ruxsat')");
             } else if (xato == SpeechRecognizer.ERROR_NETWORK || xato == SpeechRecognizer.ERROR_NETWORK_TIMEOUT) {
                 tinglashniToxtat();
-                sahifagaAyt("ovozXatosi('internet')");
+                sahifagaAyt("ovozXatosi('internet','kod " + xato + "')");
             } else if (xato == 12 || xato == 13) {      // til qo‘llanmaydi / til paketi yo‘q (Android 12+)
                 tinglashniToxtat();
-                sahifagaAyt("ovozXatosi('til')");
+                sahifagaAyt("ovozXatosi('til','kod " + xato + "')");
             } else if (++xatolarKetmaKet > 12) {          // juda ko‘p ketma-ket xato: to‘xtatamiz
                 tinglashniToxtat();
-                sahifagaAyt("ovozXatosi('boshqa')");
+                sahifagaAyt("ovozXatosi('yoq','kod " + xato + "')");
             } else {
                 // Jimlik yoki tanilmagan gap: tinglash davom etadi
                 if (xato == SpeechRecognizer.ERROR_RECOGNIZER_BUSY && tinglovchi != null) {
@@ -240,13 +349,35 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Telefonda nutqni tanish xizmati bormi */
+        /** «Ovoz bo‘yicha»: mikrofonni yoqadi */
+        @JavascriptInterface
+        public void mikniBoshla() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.mikniBoshla();
+                }
+            });
+        }
+
+        /** «Ovoz bo‘yicha»: mikrofonni o‘chiradi */
+        @JavascriptInterface
+        public void mikniToxtat() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.mikniToxtat();
+                }
+            });
+        }
+
+        /** «So‘z bo‘yicha»: telefonda nutqni tanish xizmati bormi */
         @JavascriptInterface
         public boolean ovozBormi() {
             return SpeechRecognizer.isRecognitionAvailable(MainActivity.this);
         }
 
-        /** "Ovoz bilan sanash"ni boshlaydi */
+        /** «So‘z bo‘yicha»: tinglashni boshlaydi */
         @JavascriptInterface
         public void ovozniBoshla(final String til) {
             runOnUiThread(new Runnable() {
@@ -260,7 +391,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** "Ovoz bilan sanash"ni to‘xtatadi */
+        /** «So‘z bo‘yicha»: tinglashni to‘xtatadi */
         @JavascriptInterface
         public void ovozniToxtat() {
             runOnUiThread(new Runnable() {

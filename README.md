@@ -10,7 +10,9 @@ Istig‘for duolarini sanash uchun sayt va Android ilovasi.
 - 33 donali tasbeh: odatiy maqsad 33, xohlasangiz 70, 100, 300, 1 000 yoki cheksiz.
 - 5 ta istig‘for duosi: arabcha matni, o‘qilishi, ma’nosi va manbasi bilan.
 - **Katta marra:** 40 000 (yoki 1 000, 10 000, 100 000) istig‘for sari yo‘l. Hisob kunma-kun saqlanib boradi, bajarilgan marralar ro‘yxatda qoladi.
-- **Ovoz bilan sanash:** «Astag‘firulloh» deganingizda telefon eshitib, o‘zi sanaydi (Chrome, Safari va Android ilovasida; odatda internet kerak).
+- **Ovoz bilan sanash:** duoni aytganingizda telefon eshitib, o‘zi sanaydi. Ikki usul:
+  - «Ovoz bo‘yicha» (odatiy) — ovoz balandligi bo‘yicha, internetsiz, har qanday brauzer va telefonda; har duodan keyin bir lahza to‘xtash kerak, sezgirlikni sozlash mumkin;
+  - «So‘z bo‘yicha» — so‘zni tanib sanaydi (Chrome, Safari yoki telefonda Google xizmati va internet kerak).
 - Bugungi hisob, davralar, ketma-ket kunlar, so‘nggi 7 kun grafigi.
 - Tungi rejim, tebranish, ovoz, «Ekran o‘chmasin».
 
@@ -31,7 +33,9 @@ Butun sayt bitta `index.html` faylda, har bir qismiga o‘zbekcha izoh yozilgan:
   - `sanash()`: har bosishda +1; davra va marra to‘lishini tekshiradi.
   - `marraniTekshir()`: marra to‘lsa, uni «Bajarilgan marralar»ga yozib, yangisini boshlaydi.
   - `OVOZ_NAQSHLARI`: ovoz bilan sanashda har bir duodan nima eshitilganda sanalishi.
-  - `ovozniBoshla()` / `eshitilganMatn()`: mikrofonni yoqadi va tanilgan matndagi istig‘forlarni sanaydi.
+  - `ovozniBoshla()`: tanlangan usulda tinglashni boshlaydi.
+  - `darajaKeldi()`: «Ovoz bo‘yicha» — har 25 ms da ovoz balandligini tekshirib, gap boshlanishi va tugashini aniqlaydi.
+  - `eshitilganMatn()`: «So‘z bo‘yicha» — tanilgan matndagi istig‘forlarni sanaydi.
   - `saqlash()` / `yuklash()`: hisobni telefon/brauzer xotirasiga (localStorage) yozadi va o‘qiydi.
   - `chizish()`: ekrandagi son, donalar, marra va grafikni yangilaydi.
 

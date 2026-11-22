@@ -184,6 +184,16 @@ h1, h2 { font-family: var(--shrift-sarlavha); line-height: 1.25; margin: 0; text
 }
 .ovoz-holat .nuqta { width: 8px; height: 8px; border-radius: 50%; background: var(--xavf); animation: miltillash 1.2s ease-in-out infinite; }
 .ovoz-eshitildi { color: var(--matn); font-weight: 600; }
+.ovoz-panel { display: grid; justify-items: center; gap: 10px; width: 100%; max-width: 24rem; }
+.zarba-qismi { display: grid; gap: 8px; width: 100%; }
+.daraja { position: relative; height: 10px; border-radius: 999px; background: var(--yashil-och); overflow: hidden; }
+.daraja span { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--yashil-xira); transition: width .08s linear; }
+.daraja span.baland { background: var(--yashil); }
+.daraja i { position: absolute; top: 0; bottom: 0; left: 40%; width: 2px; background: var(--matn); opacity: .45; }
+.sezgirlik { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; color: var(--xira); }
+.sezgirlik input { width: 160px; accent-color: var(--yashil); }
+.qator.ustunli { flex-direction: column; align-items: flex-start; cursor: default; }
+.qator.ustunli .maqsad-tugmalar { justify-content: flex-start; }
 @keyframes miltillash { 50% { opacity: .25; } }
 
 /* Doira ostidagi bugungi hisob va boshqaruv tugmalari */
@@ -437,11 +447,18 @@ dialog p { margin: 0 0 18px; }
           </svg>
           <span id="ovozTugmaMatn">Ovoz bilan sanash</span>
         </button>
-        <p class="ovoz-holat" id="ovozHolat" aria-live="polite" hidden>
-          <span class="nuqta" aria-hidden="true"></span>
-          <span id="ovozHolatMatn">Tinglayapman</span>
-          <bdi class="ovoz-eshitildi" id="ovozEshitildi" dir="auto"></bdi>
-        </p>
+        <div class="ovoz-panel" id="ovozPanel" hidden>
+          <p class="ovoz-holat" aria-live="polite">
+            <span class="nuqta" aria-hidden="true"></span>
+            <span id="ovozHolatMatn">Tinglayapman</span>
+            <bdi class="ovoz-eshitildi" id="ovozEshitildi" dir="auto"></bdi>
+          </p>
+          <!-- «Ovoz bo‘yicha» usuli: ovoz balandligi chizig‘i va sezgirlik -->
+          <div class="zarba-qismi" id="zarbaQismi">
+            <div class="daraja" aria-hidden="true"><span id="darajaChiziq"></span><i id="darajaChegara"></i></div>
+            <label class="sezgirlik" for="sezgirlik">Sezgirlik <input type="range" id="sezgirlik" min="1" max="5" step="1" value="3"></label>
+          </div>
+        </div>
       </div>
 
       <!-- Bugungi hisob va davralar soni -->
@@ -568,6 +585,13 @@ dialog p { margin: 0 0 18px; }
             <span class="qator-matn">Ekran o‘chmasin<small id="ekranIzoh">Uzoq zikr paytida ekran yoniq turadi</small></span>
             <input type="checkbox" role="switch" class="almashtirgich" id="sozEkran">
           </label>
+          <div class="qator ustunli">
+            <span class="qator-matn" id="usulNomi">Ovoz bilan sanash usuli<small>«Ovoz bo‘yicha» internetsiz, har qanday telefonda ishlaydi. «So‘z bo‘yicha» so‘zni tanib sanaydi, lekin internet va Chrome kerak.</small></span>
+            <div class="maqsad-tugmalar" id="ovozUsullari" role="group" aria-labelledby="usulNomi">
+              <button type="button" class="maqsad" data-usul="zarba">Ovoz bo‘yicha</button>
+              <button type="button" class="maqsad" data-usul="soz">So‘z bo‘yicha</button>
+            </div>
+          </div>
         </div>
         <p class="eslatma">Hisob shu qurilmadagi brauzerda saqlanadi va hech qayerga yuborilmaydi. Brauzer ma’lumotlarini tozalasangiz, hisob ham o‘chadi.</p>
         <button class="tugma xavfli" id="ochirishTugmasi" type="button">Barcha hisobni o‘chirish</button>
@@ -582,7 +606,7 @@ dialog p { margin: 0 0 18px; }
           <li>Har bir duoning o‘z sanog‘i bor, duoni almashtirsangiz hisob yo‘qolmaydi.</li>
           <li>Tebranish va «Ekran o‘chmasin» hamma brauzerda ham ishlamaydi. Masalan, iPhone’dagi Safari tebranishni qo‘llamaydi.</li>
           <li>Katta marra barcha duolardagi istig‘forlarni kunma-kun qo‘shib boradi. Marra to‘lganda u «Bajarilgan marralar» ro‘yxatiga yoziladi va yangisi boshlanadi.</li>
-          <li>Ovoz bilan sanash: «Ovoz bilan sanash» tugmasini bosing va «Astag‘firulloh» deb ayting, har aytganingiz o‘zi sanaladi. Odatda internet kerak bo‘ladi; Chrome, Safari va Android ilovasida ishlaydi. Tinglash paytida ekran o‘chmaydi.</li>
+          <li>Ovoz bilan sanash: tugmani bosing va duoni ayting, har aytganingiz o‘zi sanaladi. Odatiy «Ovoz bo‘yicha» usuli internetsiz ishlaydi: har duodan keyin bir lahza to‘xtang. Shovqinli joyda sezgirlikni kamaytiring, ovozingiz sanalmasa oshiring. «So‘z bo‘yicha» usuli (Sozlamalarda) so‘zni tanib sanaydi, lekin internet va Chrome kerak. Tinglash paytida ekran o‘chmaydi.</li>
           <li id="ornatishIzoh">Telefonga o‘rnatish: Android uchun ilovani yuklab oling. iPhone’da saytni Safari’da oching va Share → Add to Home Screen («На экран Домой») ni tanlang.</li>
         </ul>
         <a class="tugma asosiy-tugma" id="ilovaHavola" href="istigfor.apk" download hidden>Android ilovasini yuklab olish</a>
@@ -670,15 +694,17 @@ const ZIKRLAR = [
   }
 ];
 
-/* Ovoz bilan sanashda: har bir duo uchun nima eshitilganda bitta sanaladi.
-   arab — arabcha matndagi bo‘lak (harakatlarsiz), lotin — lotin harflarida yozilganda.
-   Yangi duo qo‘shsangiz, bu yerga ham uning bo‘lagini yozing. */
+/* Ovoz bilan sanash sozlamalari, har bir duo uchun:
+   arab / lotin — «So‘z bo‘yicha» usulida tanilgan matndan qidiriladigan bo‘lak;
+   pauza — «Ovoz bo‘yicha» usulida duolar orasidagi to‘xtash (ms);
+   minUzunlik / maxUzunlik — bitta duo aytilishining eng qisqa / eng uzun davomiyligi (ms).
+   Yangi duo qo‘shsangiz, bu yerga ham uning sozlamasini yozing. */
 const OVOZ_NAQSHLARI = {
-  astagfirulloh: { arab: /استغفر/g, lotin: /[ae]stag?h?f/g },
-  atubu:         { arab: /استغفر/g, lotin: /[ae]stag?h?f/g },
-  sayyidul:      { arab: /يغفر الذنوب/g, lotin: /zunu+b/g },
-  robbigfirliy:  { arab: /اغفر ?لي/g, lotin: /g?h?fir ?li/g },
-  hayyulqayyum:  { arab: /استغفر/g, lotin: /[ae]stag?h?f/g }
+  astagfirulloh: { arab: /استغفر/g, lotin: /[ae]stag?h?f/g, pauza: 200, minUzunlik: 300, maxUzunlik: 6000 },
+  atubu:         { arab: /استغفر/g, lotin: /[ae]stag?h?f/g, pauza: 250, minUzunlik: 500, maxUzunlik: 8000 },
+  sayyidul:      { arab: /يغفر الذنوب/g, lotin: /zunu+b/g, pauza: 1500, minUzunlik: 6000, maxUzunlik: 60000 },
+  robbigfirliy:  { arab: /اغفر ?لي/g, lotin: /g?h?fir ?li/g, pauza: 300, minUzunlik: 700, maxUzunlik: 10000 },
+  hayyulqayyum:  { arab: /استغفر/g, lotin: /[ae]stag?h?f/g, pauza: 350, minUzunlik: 1000, maxUzunlik: 12000 }
 };
 
 const MAQSADLAR = [33, 70, 100, 300, 1000, 0];  // bir davradagi son; 0 = maqsadsiz (cheksiz)
@@ -696,7 +722,7 @@ const MARRALAR = [1000, 10000, 40000, 100000];   // katta marra hajmlari (odatda
      umumiy: 5310,                                         ← butun vaqt davomidagi jami
      marra: { maqsad: 40000, soni: 5310, boshlangan: "2026-11-01" },   ← katta marra sari yo‘l
      marralar: [ { maqsad: 40000, boshlangan: "...", tugagan: "..." } ], ← bajarilgan marralar
-     sozlamalar: { tebranish: true, ovoz: false, ekran: false }
+     sozlamalar: { tebranish: true, ovoz: false, ekran: false, ovozUsuli: "zarba", sezgirlik: 3 }
    }
    Har o‘zgarishdan keyin holat brauzer xotirasiga (localStorage) yoziladi,
    shuning uchun sahifani yopib qayta ochsangiz ham hisob saqlanib qoladi. */
@@ -711,7 +737,7 @@ function boshlangichHolat() {
     umumiy: 0,
     marra: { maqsad: 40000, soni: 0, boshlangan: sanaKaliti(new Date()) },
     marralar: [],
-    sozlamalar: { tebranish: true, ovoz: false, ekran: false }
+    sozlamalar: { tebranish: true, ovoz: false, ekran: false, ovozUsuli: "zarba", sezgirlik: 3 }
   };
 }
 
@@ -885,7 +911,7 @@ function sanash() {
     davraTugadi();
   } else {
     tebrat(12);                    // qisqa tebranish
-    ovozChiqar(false);             // qisqa "tiq" (yoqilgan bo‘lsa)
+    if (!ovozFaol) ovozChiqar(false);   // qisqa "tiq" (ovoz bilan sanashda chalinmaydi — mikrofon eshitib qolmasin)
   }
 
   // Katta marra to‘ldimi?
@@ -903,7 +929,7 @@ function sanash() {
 function davraTugadi() {
   tabrik = true;
   tebrat([90, 60, 90]);
-  ovozChiqar(true);
+  if (!ovozFaol) ovozChiqar(true);
   xabarKorsat(`${formatla(holat.maqsad)} ta istig‘for aytildi. Alloh qabul qilsin!`);
   tabrikTaymeri = setTimeout(() => {
     tabrik = false;
@@ -1009,7 +1035,7 @@ function xabarKorsat(matn) {
   el.xabar.textContent = matn;
   el.xabar.classList.add("korinadi");
   clearTimeout(xabarTaymeri);
-  xabarTaymeri = setTimeout(() => el.xabar.classList.remove("korinadi"), 2800);
+  xabarTaymeri = setTimeout(() => el.xabar.classList.remove("korinadi"), Math.max(2800, matn.length * 60));
 }
 
 
@@ -1078,25 +1104,218 @@ function ekranQulfiniOchir() {
 
 
 /* ---------- E2) OVOZ BILAN SANASH ----------
-   Tugma bosilganda telefon (yoki brauzer) gapni eshitib, matnga aylantiradi.
-   Matnda tanlangan duo necha marta uchrasa, shuncha sanaladi.
-   Brauzerda — Web Speech API (Chrome, Safari), Android ilovasida — telefonning o‘z xizmati (window.Ilova). */
+   Ikki usul bor (Sozlamalarda tanlanadi):
+   1) «Ovoz bo‘yicha» (odatiy): mikrofon ovoz balandligini kuzatadi. Har bir aytilgan duo
+      ortidan qisqa to‘xtash bilan bitta «ovoz to‘lqini» bo‘ladi va bitta sanaladi.
+      Internet kerak emas, har qanday brauzer va telefonda ishlaydi.
+   2) «So‘z bo‘yicha»: nutqni tanish xizmati gapni matnga aylantiradi, matnda duo necha marta
+      uchrasa, shuncha sanaladi. Aniqroq, lekin internet va Chrome/Safari (telefonda Google xizmati) kerak. */
 const NutqniTanish = window.SpeechRecognition || window.webkitSpeechRecognition;
-let ovozFaol = false;        // hozir tinglayaptimi
+let ovozFaol = false;          // hozir tinglayaptimi
+let joriyUsul = "zarba";       // hozir ishlayotgan usul: "zarba" (ovoz bo‘yicha) yoki "soz" (so‘z bo‘yicha)
+
+const OVOZ_XATOLARI = {
+  ruxsat: "Mikrofon ochilmadi: ruxsat berilmagan. Brauzer yoki telefon sozlamalarida mikrofonga ruxsat bering. Claude ichida mikrofon ishlamaydi, saytni quvonchbek99.github.io/istigfor manzilida yoki ilovada oching.",
+  mikYoq: "Mikrofon topilmadi yoki ochilmadi.",
+  internet: "«So‘z bo‘yicha» usuli bu yerda ishlamadi (internet yoki nutq xizmati yo‘q). Sozlamalarda «Ovoz bo‘yicha» usulini tanlang.",
+  til: "Telefonda arab tilida nutqni tanish yo‘q. Sozlamalarda «Ovoz bo‘yicha» usulini tanlang.",
+  yoq: "«So‘z bo‘yicha» usuli bu brauzer yoki telefonda ishlamaydi. Sozlamalarda «Ovoz bo‘yicha» usulini tanlang.",
+  boshqa: "Ovoz bilan sanashni boshlab bo‘lmadi. Qayta urinib ko‘ring."
+};
+
+/* Xato bo‘lsa: tinglash to‘xtaydi va sababi yoziladi (Android ilovasi ham shuni chaqiradi) */
+function ovozXatosi(tur, kod) {
+  ovozniToxtat();
+  xabarKorsat((OVOZ_XATOLARI[tur] || OVOZ_XATOLARI.boshqa) + (kod ? ` (xato: ${kod})` : ""));
+}
+
+function ovozniBoshla() {
+  joriyUsul = holat.sozlamalar.ovozUsuli === "soz" ? "soz" : "zarba";
+  const bormi = joriyUsul === "soz" ? sozTanishBormi() : mikrofonBormi();
+  if (!bormi) {
+    xabarKorsat(joriyUsul === "soz" ? OVOZ_XATOLARI.yoq : OVOZ_XATOLARI.mikYoq);
+    return;
+  }
+  ovozFaol = true;
+  if (joriyUsul === "soz") sozBoyichaBoshla();
+  else zarbaBoyichaBoshla();
+  ekranniYoqiqTut();             // tinglash paytida ekran o‘chmasin
+  ovozHolatiniChiz(true);
+}
+
+function ovozniToxtat() {
+  ovozFaol = false;
+  sozBoyichaToxtat();
+  zarbaBoyichaToxtat();
+  ovozHolatiniChiz(false);
+  if (!holat.sozlamalar.ekran) ekranQulfiniOchir();
+}
+
+/* Android ilovasi orqa fonga o‘tganda tinglash to‘xtaydi */
+function ovozToxtadi() {
+  if (ovozFaol) ovozniToxtat();
+}
+
+/* «Tinglayapman ...» yozuvi — usul va tanlangan duoga qarab */
+function ovozIshorasi() {
+  const zikr = joriyZikr();
+  const uzun = zikr.oqilishi.length > 40;
+  const aytish = zikr.oqilishi.replace(/\.$/, "");
+  if (joriyUsul === "zarba") {
+    return uzun
+      ? `Tinglayapman. «${zikr.nomi}»ni o‘qib bo‘lgach, 2 soniya to‘xtang.`
+      : `Tinglayapman. Har «${aytish}»dan keyin bir lahza to‘xtang.`;
+  }
+  return uzun ? `Tinglayapman, «${zikr.nomi}»ni o‘qing:` : `Tinglayapman, «${aytish}» deb ayting:`;
+}
+
+/* Tugma va tinglash panelini yangilaydi */
+function ovozHolatiniChiz(faol) {
+  el.ovozTugmasi.setAttribute("aria-pressed", String(faol));
+  el.ovozTugmaMatn.textContent = faol ? "Ovozni to‘xtatish" : "Ovoz bilan sanash";
+  el.ovozPanel.hidden = !faol;
+  el.ovozHolatMatn.textContent = ovozIshorasi();
+  el.ovozEshitildi.textContent = "";
+  el.zarbaQismi.hidden = joriyUsul !== "zarba";
+  el.tasbeh.classList.toggle("tinglayapti", faol);
+}
+
+
+/* ===== 1-usul: OVOZ BO‘YICHA (ovoz balandligi) ===== */
+const KADR_MS = 25;                           // har 25 ms da bitta o‘lchov
+const SEZGIRLIK_DB = [20, 16, 12, 9, 6];      // sezgirlik 1..5: fon shovqinidan necha dB baland ovoz «gap» hisoblanadi
+let mikOqimi = null;                          // brauzerdagi mikrofon oqimi
+let mikKonteksti = null;                      // brauzerdagi audio konteksti
+let mikTaymeri = null;
+let shovqin = null;                           // fon shovqini darajasi (dB), o‘zi moslashadi
+let gapda = false;                            // hozir gapirilyaptimi
+let gapUzunligi = 0;                          // joriy gap uzunligi (ms)
+let jimlik = 0;                               // gap ichidagi jimlik (ms)
+let balandKetma = 0;                          // ketma-ket baland o‘lchovlar
+let darajaVaqti = 0;
+
+function mikrofonBormi() {
+  if (window.Ilova && typeof window.Ilova.mikniBoshla === "function") return true;
+  return Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+}
+
+function zarbaBoyichaBoshla() {
+  shovqin = null;
+  gapda = false;
+  gapUzunligi = 0;
+  jimlik = 0;
+  balandKetma = 0;
+  if (window.Ilova && typeof window.Ilova.mikniBoshla === "function") {
+    window.Ilova.mikniBoshla();          // ilova o‘lchovlarni window.ovozDarajasi ga yuboradi
+    return;
+  }
+  // Audio konteksti tugma bosilgan zahoti yaratiladi (brauzerlar shuni talab qiladi)
+  const AudioKontekst = window.AudioContext || window.webkitAudioContext;
+  try {
+    mikKonteksti = new AudioKontekst();
+  } catch (xato) {
+    ovozXatosi("mikYoq");
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
+    .then((oqim) => {
+      if (!ovozFaol || !mikKonteksti) {
+        oqim.getTracks().forEach(t => t.stop());
+        return;
+      }
+      mikOqimi = oqim;
+      const tahlilchi = mikKonteksti.createAnalyser();
+      tahlilchi.fftSize = 1024;
+      mikKonteksti.createMediaStreamSource(oqim).connect(tahlilchi);
+      if (mikKonteksti.state === "suspended") mikKonteksti.resume();
+      const namuna = new Float32Array(tahlilchi.fftSize);
+      mikTaymeri = setInterval(() => {
+        tahlilchi.getFloatTimeDomainData(namuna);
+        let yigindi = 0;
+        for (let i = 0; i < namuna.length; i++) yigindi += namuna[i] * namuna[i];
+        darajaKeldi(10 * Math.log10(yigindi / namuna.length + 1e-12));   // ovoz balandligi, dB
+      }, KADR_MS);
+    })
+    .catch((xato) => {
+      const nomi = xato && xato.name;
+      ovozXatosi(nomi === "NotAllowedError" || nomi === "SecurityError" ? "ruxsat" : "mikYoq", nomi);
+    });
+}
+
+function zarbaBoyichaToxtat() {
+  if (window.Ilova && typeof window.Ilova.mikniToxtat === "function") window.Ilova.mikniToxtat();
+  if (mikTaymeri) {
+    clearInterval(mikTaymeri);
+    mikTaymeri = null;
+  }
+  if (mikOqimi) {
+    mikOqimi.getTracks().forEach(t => t.stop());
+    mikOqimi = null;
+  }
+  if (mikKonteksti) {
+    try { mikKonteksti.close(); } catch (xato) { /* allaqachon yopilgan */ }
+    mikKonteksti = null;
+  }
+}
+
+/* Android ilovasi mikrofon o‘lchovlarini (dB) shu yerga yuboradi */
+window.ovozDarajasi = function (olchovlar) {
+  if (!ovozFaol || joriyUsul !== "zarba") return;
+  olchovlar.forEach(darajaKeldi);
+};
+
+/* Har bir o‘lchovda (25 ms): gap boshlandimi yoki tugadimi — shuni aniqlaydi */
+function darajaKeldi(db) {
+  const naqsh = OVOZ_NAQSHLARI[holat.zikr] || OVOZ_NAQSHLARI.astagfirulloh;
+  const farq = SEZGIRLIK_DB[(holat.sozlamalar.sezgirlik || 3) - 1];
+  if (shovqin === null) shovqin = db;
+  const boshlanish = shovqin + farq;          // shundan baland — gap boshlandi
+  const tugash = shovqin + farq / 2;          // shundan past — jimlik
+
+  if (!gapda) {
+    // Fon shovqini: jim joyda tez pasayadi, shovqin kuchaysa sekin ko‘tariladi
+    shovqin += db < shovqin ? (db - shovqin) * 0.2 : Math.min(0.05, (db - shovqin) * 0.01);
+    balandKetma = db > boshlanish ? balandKetma + 1 : 0;
+    if (balandKetma >= 2) {
+      gapda = true;
+      gapUzunligi = balandKetma * KADR_MS;
+      jimlik = 0;
+    }
+  } else {
+    gapUzunligi += KADR_MS;
+    jimlik = db < tugash ? jimlik + KADR_MS : 0;
+    if (jimlik >= naqsh.pauza) {
+      if (gapUzunligi - jimlik >= naqsh.minUzunlik) sanash();   // bitta duo aytildi
+      gapda = false;
+      balandKetma = 0;
+    } else if (gapUzunligi > naqsh.maxUzunlik) {
+      // To‘xtovsiz uzoq ovoz — bu duo emas, shovqin: fon darajasini yangilaymiz
+      shovqin = db;
+      gapda = false;
+      balandKetma = 0;
+    }
+  }
+  darajaniChiz(db, farq);
+}
+
+/* Ovoz balandligi chizig‘i: chiziq — hozirgi ovoz, belgi — sanash chegarasi */
+function darajaniChiz(db, farq) {
+  const hozir = Date.now();
+  if (hozir - darajaVaqti < 80) return;       // sekundiga ~12 marta yangilash kifoya
+  darajaVaqti = hozir;
+  el.darajaChiziq.style.width = Math.max(0, Math.min(100, (db - shovqin) / 30 * 100)) + "%";
+  el.darajaChiziq.classList.toggle("baland", gapda);
+  el.darajaChegara.style.left = Math.min(100, farq / 30 * 100) + "%";
+}
+
+
+/* ===== 2-usul: SO‘Z BO‘YICHA (nutqni tanish) ===== */
 let tanish = null;           // brauzerdagi nutqni tanish obyekti
 let sessiya = 0;             // brauzerda har qayta ishga tushishning raqami
 let androidGap = 0;          // ilovada nechanchi gap (har yakuniy natijadan keyin +1)
 const sanalganlar = {};      // har bir gap uchun allaqachon sanalgan son
 
-const OVOZ_XATOLARI = {
-  ruxsat: "Mikrofonga ruxsat berilmadi. Brauzer yoki telefon sozlamalaridan mikrofonga ruxsat bering.",
-  internet: "Ovoz bilan sanash uchun internet kerak.",
-  til: "Telefonda arab tilida nutqni tanish o‘rnatilmagan.",
-  yoq: "Bu brauzerda ovoz bilan sanash ishlamaydi. Chrome, Safari yoki Android ilovasida oching.",
-  boshqa: "Ovoz bilan sanashni boshlab bo‘lmadi. Qayta urinib ko‘ring."
-};
-
-function ovozImkoniBormi() {
+function sozTanishBormi() {
   if (window.Ilova && typeof window.Ilova.ovozBormi === "function") return window.Ilova.ovozBormi();
   return Boolean(NutqniTanish);
 }
@@ -1104,7 +1323,7 @@ function ovozImkoniBormi() {
 /* Arabcha matnni solishtirishga tayyorlaydi: harakatlar olib tashlanadi, alif shakllari bittalashadi */
 function arabchaTozala(matn) {
   return matn
-    .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+    .replace(/[ً-ٰٟـ]/g, "")
     .replace(/[أإآٱ]/g, "ا")
     .replace(/ى/g, "ي")
     .replace(/ة/g, "ه");
@@ -1126,7 +1345,7 @@ function nechtaEshitildi(matn) {
 /* Tanilgan matnni sanaydi. kalit — gapning raqami: bitta gapning oraliq va yakuniy
    natijalari bir kalitda keladi, shuning uchun faqat yangi eshitilganlari qo‘shiladi */
 function eshitilganMatn(kalit, matn, yakuniy) {
-  if (!ovozFaol) return;
+  if (!ovozFaol || joriyUsul !== "soz") return;
   const soni = nechtaEshitildi(matn);
   const oldin = sanalganlar[kalit] || 0;
   for (let i = oldin; i < soni; i++) sanash();
@@ -1140,20 +1359,10 @@ window.ovozdanKeldi = function (matn, yakuniy) {
   if (yakuniy) androidGap += 1;
 };
 
-function ovozniBoshla() {
-  if (!ovozImkoniBormi()) {
-    xabarKorsat(OVOZ_XATOLARI.yoq);
-    return;
-  }
-  ovozFaol = true;
+function sozBoyichaBoshla() {
   Object.keys(sanalganlar).forEach(k => delete sanalganlar[k]);
-  if (window.Ilova && typeof window.Ilova.ovozniBoshla === "function") {
-    window.Ilova.ovozniBoshla("ar-SA");
-  } else {
-    brauzerdaTinglash();
-  }
-  ekranniYoqiqTut();             // tinglash paytida ekran o‘chmasin
-  ovozHolatiniChiz(true);
+  if (window.Ilova && typeof window.Ilova.ovozniBoshla === "function") window.Ilova.ovozniBoshla("ar-SA");
+  else brauzerdaTinglash();
 }
 
 /* Brauzerda tinglash (Chrome, Safari). Jimlikdan keyin brauzer to‘xtaydi — rejim yoqiq bo‘lsa, qayta boshlanadi */
@@ -1170,13 +1379,15 @@ function brauzerdaTinglash() {
     }
   };
   tanish.onerror = (e) => {
-    if (e.error === "not-allowed" || e.error === "service-not-allowed" || e.error === "audio-capture") ovozXatosi("ruxsat");
-    else if (e.error === "network") ovozXatosi("internet");
-    else if (e.error === "language-not-supported") ovozXatosi("til");
+    if (e.error === "not-allowed") ovozXatosi("ruxsat", e.error);
+    else if (e.error === "audio-capture") ovozXatosi("mikYoq", e.error);
+    else if (e.error === "network") ovozXatosi("internet", e.error);
+    else if (e.error === "service-not-allowed") ovozXatosi("yoq", e.error);
+    else if (e.error === "language-not-supported") ovozXatosi("til", e.error);
     // "no-speech" (jimlik) va "aborted" da hech narsa qilinmaydi: onend qayta boshlaydi
   };
   tanish.onend = () => {
-    if (ovozFaol) setTimeout(() => { if (ovozFaol) brauzerdaTinglash(); }, 250);
+    if (ovozFaol && joriyUsul === "soz") setTimeout(() => { if (ovozFaol && joriyUsul === "soz") brauzerdaTinglash(); }, 250);
   };
   try {
     tanish.start();
@@ -1185,44 +1396,13 @@ function brauzerdaTinglash() {
   }
 }
 
-function ovozniToxtat() {
-  ovozFaol = false;
+function sozBoyichaToxtat() {
   if (window.Ilova && typeof window.Ilova.ovozniToxtat === "function") window.Ilova.ovozniToxtat();
   if (tanish) {
     tanish.onend = null;
     try { tanish.stop(); } catch (xato) { /* allaqachon to‘xtagan */ }
     tanish = null;
   }
-  ovozHolatiniChiz(false);
-  if (!holat.sozlamalar.ekran) ekranQulfiniOchir();
-}
-
-/* Xato bo‘lsa: tinglash to‘xtaydi va sababi yoziladi (Android ilovasi ham shuni chaqiradi) */
-function ovozXatosi(tur) {
-  ovozniToxtat();
-  xabarKorsat(OVOZ_XATOLARI[tur] || OVOZ_XATOLARI.boshqa);
-}
-
-/* Android ilovasi orqa fonga o‘tganda tinglash to‘xtaydi */
-function ovozToxtadi() {
-  if (ovozFaol) ovozniToxtat();
-}
-
-/* "Tinglayapman, «...» deb ayting" — tanlangan duoga qarab */
-function ovozIshorasi() {
-  const zikr = joriyZikr();
-  if (zikr.oqilishi.length > 40) return `Tinglayapman, «${zikr.nomi}»ni o‘qing:`;
-  return `Tinglayapman, «${zikr.oqilishi.replace(/\.$/, "")}» deb ayting:`;
-}
-
-/* Tugma va «Tinglayapman» yozuvini yangilaydi */
-function ovozHolatiniChiz(faol) {
-  el.ovozTugmasi.setAttribute("aria-pressed", String(faol));
-  el.ovozTugmaMatn.textContent = faol ? "Ovozni to‘xtatish" : "Ovoz bilan sanash";
-  el.ovozHolat.hidden = !faol;
-  el.ovozHolatMatn.textContent = ovozIshorasi();
-  el.ovozEshitildi.textContent = "";
-  el.tasbeh.classList.toggle("tinglayapti", faol);
 }
 
 
@@ -1284,6 +1464,10 @@ function chizish() {
   el.sozTebranish.checked = holat.sozlamalar.tebranish && !el.sozTebranish.disabled;
   el.sozOvoz.checked = holat.sozlamalar.ovoz;
   el.sozEkran.checked = holat.sozlamalar.ekran && !el.sozEkran.disabled;
+  el.ovozUsullari.querySelectorAll("button").forEach(t => {
+    t.setAttribute("aria-pressed", String(t.dataset.usul === holat.sozlamalar.ovozUsuli));
+  });
+  el.sezgirlik.value = holat.sozlamalar.sezgirlik;
 }
 
 /* Katta marra qismlarini yangilaydi: doira ostidagi chiziq va «Katta marra» paneli */
@@ -1522,6 +1706,19 @@ function hodisalarniUlash() {
   el.ochirishTugmasi.addEventListener("click", hammasiniOchirish);
   el.yangiMarraTugmasi.addEventListener("click", yangiMarra);
   el.ovozTugmasi.addEventListener("click", () => (ovozFaol ? ovozniToxtat() : ovozniBoshla()));
+  el.ovozUsullari.querySelectorAll("button").forEach(t => t.addEventListener("click", () => {
+    holat.sozlamalar.ovozUsuli = t.dataset.usul;
+    saqlash();
+    chizish();
+    if (ovozFaol) {             // tinglayotgan bo‘lsa, yangi usulda qayta boshlaydi
+      ovozniToxtat();
+      ovozniBoshla();
+    }
+  }));
+  el.sezgirlik.addEventListener("input", () => {
+    holat.sozlamalar.sezgirlik = Number(el.sezgirlik.value);
+    saqlash();
+  });
   el.dialogHa.addEventListener("click", () => el.dialog.close("ha"));
   el.dialogYoq.addEventListener("click", () => el.dialog.close("yoq"));
 
